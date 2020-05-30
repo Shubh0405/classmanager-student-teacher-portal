@@ -1,0 +1,60 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+  {% if teacher.messages.count == 0 %}
+  <h2>No messages yet.</h2>
+  {% else %}
+  {% for mssg in teacher.messages.all %}
+  <div class="notice">
+    <div class="row">
+      <div class="col-md-1">
+        {% if mssg.student.student_profile_pic %}
+        <img src="{{ mssg.student.student_profile_pic.url }}" class="notice-img">
+        {% else %}
+        <img src="{% static 'images/login-avatar.PNG' %}" class="notice-img">
+        {% endif %}
+      </div>
+      <div class="col-md-11">
+        <div class="notice-details">
+          <div class="row">
+            <div class="col-md-3">
+              <h5>By: {{ mssg.student.name }}</h5>
+            </div>
+            <div class="col-md-3">
+              <h5>{{ mssg.created_at }}</h5>
+            </div>
+          </div>
+          <hr>
+          <h2>{{ mssg.message_html|safe }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<!--
+{% if teacher.messages.count == 0 %}
+<h2>No messages yet.</h2>
+{% else %}
+
+{% for mssg in teacher.messages.all %}
+<div class="">
+  <h3> {{ mssg.message_html|safe }} </h3>
+  <div class="row">
+    <div class="col-md-6">
+      <p>By: {{ mssg.student.name }}</p>
+    </div>
+    <div class="col-md-6">
+      <p>Date: {{ mssg.created_at }}</p>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+
+-->
+
+{% endblock %}

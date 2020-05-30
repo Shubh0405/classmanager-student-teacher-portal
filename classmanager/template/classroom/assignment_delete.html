@@ -1,0 +1,17 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Delete {{ object.assignment_name }}?</h1>
+
+    <form method='POST'>
+      {% csrf_token %}
+      <p>Are you sure you want to remove this Assignment?</p>
+      <input class="btn btn-primary" type='submit' value='Yes'>
+      <a class="btn btn-danger" href="{% url 'classroom:assignment_list' %}">Cancel</a>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

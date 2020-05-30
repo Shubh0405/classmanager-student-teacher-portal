@@ -1,0 +1,53 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="profile">
+  <img src="{% static 'images/profile-background-3.PNG' %}" alt="">
+  <div class="profile-box">
+    {% if teacher.teacher_profile_pic %}
+    <img src="{{ teacher.teacher_profile_pic.url }}" alt="">
+    {% else %}
+    <img src="{% static 'images/login-avatar.PNG' %}" alt="">
+    {% endif %}
+    <div class="profile-details">
+      <h1>{{ teacher.name }}</h1>
+      <br>
+      <p><i class="far fa-user"></i> Username: {{ teacher.user.username }}</p>
+      <p><i class="fas fa-books"></i> Subject Name: {{ teacher.subject_name }}</p>
+      <p><i class="far fa-phone"></i> Phone: {{ teacher.phone }}</p>
+      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ teacher.email }}</p>
+      <a href="{% url 'classroom:teacher_update' pk=user.pk %}"><p class="edit-button">Edit profile</p></a>
+    </div>
+  </div>
+</div>
+
+
+<!--
+<div class="row">
+  <div class="col-md-3">
+    {% if teacher.teacher_profile_pic %}
+      <img src="{{ teacher.teacher_profile_pic.url }}" style="width:100px;height:100px;">
+    {% else %}
+      <img src="" alt="">
+    {% endif %}
+  </div>
+  <div class="col-md-9">
+    <h1>{{ teacher.user.username }}</h1>
+    <br>
+    <p>Name: {{ teacher.name }}</p>
+    <p>Subject: {{ teacher.subject_name }}</p>
+    <p>Email: {{ teacher.email }}</p>
+    <p>Phone: {{ teacher.phone }}</p>
+    <br>
+    <div class="row">
+      <div class="col-md-6">
+        <p><a class="btn btn-primary" href="{% url 'classroom:teacher_update' pk=user.pk %}">Edit profile</a></p>
+      </div>
+      <div class="col-md-6">
+        <p><a class="btn btn-danger" href="{% url 'classroom:write_notice' %}">Add Notice</a></p>
+      </div>
+    </div>
+</div>
+-->
+{% endblock %}

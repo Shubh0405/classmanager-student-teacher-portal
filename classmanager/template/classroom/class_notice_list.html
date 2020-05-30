@@ -1,0 +1,67 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+
+  {% if student.class_notice.count == 0 %}
+  <h2>No Notice Yet.</h2>
+  {% else %}
+
+  {% for notice in student.class_notice.all %}
+  <div class="notice">
+  <div class="row">
+    <div class="col-md-1">
+      {% if notice.teacher.teacher_profile_pic %}
+      <img src="{{ notice.teacher.teacher_profile_pic.url }}" class="notice-img">
+      {% else %}
+      <img src="{% static 'images/login-avatar.PNG' %}" class="notice-img">
+      {% endif %}
+    </div>
+    <div class="col-md-11">
+      <div class="notice-details">
+        <div class="row">
+        <div class="col-md-3">
+          <h5>By: {{ notice.teacher.name }}</h5>
+        </div>
+        <div class="col-md-3">
+          <h5>Subject: {{ notice.teacher.subject_name }}</h5>
+        </div>
+        <div class="col-md-3">
+          <h5>{{ notice.created_at }}</h5>
+        </div>
+        </div>
+        <hr>
+        <h2>{{ notice.message_html|safe }}</h2>
+        </div>
+    </div>
+  </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+
+
+
+<!--
+{% if student.class_notice.count == 0 %}
+<h2>No notice yet</h2>
+{% else %}
+{% for notice in student.class_notice.all %}
+<div class="">
+  <h3>{{ notice.message_html|safe }}</h3>
+  <div class="row">
+    <div class="col-md-6">
+      <p>By: {{ notice.teacher.name }}</p>
+    </div>
+    <div class="col-md-6">
+      <p>Date: {{ notice.created_at }}</p>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+
+-->
+
+{% endblock %}

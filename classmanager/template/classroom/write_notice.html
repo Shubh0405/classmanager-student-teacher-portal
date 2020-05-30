@@ -1,0 +1,22 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+<div class="jumbotron">
+  {% if notice_sent %}
+  <h1>Your Notice is added successfully.</h1>
+  {% else %}
+  <h1 style="text-align:center;">Write your notice here!</h1>
+  <h3>Notice will be sent to every student in your class.</h3>
+  <hr>
+  <form method="post">
+    {% csrf_token %}
+    {{ notice.as_p }}
+    <input type="submit" class="btn btn-danger" value="Add Notice">
+  </form>
+  {% endif %}
+</div>
+</div>
+
+
+{%  endblock %}

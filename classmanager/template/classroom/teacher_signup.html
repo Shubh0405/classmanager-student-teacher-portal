@@ -1,0 +1,43 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="login-page">
+  <img src="{% static 'images/login-background.PNG' %}" alt="">
+  <div class="student-signup-form">
+    {% if registered %}
+    <h1>Thank you for registering.</h1>
+    {% else %}
+    <h1>Sign Up as a teacher.</h1>
+    
+
+    <form method="post">
+      {% csrf_token %}
+
+      {{ teacher_profile_form.non_field_errors }}
+
+      <p><label >{{ teacher_profile_form.name.label_tag }}</label>{{ teacher_profile_form.name }}</p>
+      <p> <label for="">{{ teacher_profile_form.subject_name.label_tag }}</label>  {{ teacher_profile_form.subject_name }}</p>
+      <p> <label for="">{{ teacher_profile_form.phone.label_tag }}</label> {{ teacher_profile_form.phone }}</p>
+      <p> <label for="">{{ teacher_profile_form.email.label_tag }}</label>{{ teacher_profile_form.email }}</p>
+
+
+      {{ user_form.non_field_errors }}
+
+      <p> <label for="">{{ user_form.username.label_tag }}</label>{{ user_form.username }}</p>
+      <p> {{ user_form.username.help_text }}</p>
+      <p> <label for="">{{ user_form.password1.label_tag }}</label>{{ user_form.password1 }}</p>
+      <p> {{ user_form.password1.help_text }} </p>
+      <p> <label for="">{{ user_form.password2.label_tag }}</label>{{ user_form.password2 }}</p>
+      <p> {{ user_form.password2.help_text }} </p>
+      <input type="submit" name="" value="Sign Up">
+    </form>
+    <a href="{% url 'classroom:login' %}">Already have an account.</a>
+    {% endif %}
+  </div>
+</div>
+
+
+
+{% endblock %}

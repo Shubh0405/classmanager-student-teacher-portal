@@ -1,0 +1,13 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+<div class="container">
+<div class="jumbotron">
+  <h1>Update Assignment</h1>
+  <form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-danger" name="" value="Update">
+  </form>
+</div>
+</div>
+{% endblock %}

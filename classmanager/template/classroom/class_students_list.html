@@ -1,0 +1,79 @@
+{% extends "classroom/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="student-list">
+<div class="container">
+  {% if class_students_list.count == 0 %}
+    <h1>No students in the class.</h1>
+    {% else %}
+
+  <form method='GET' action="{% url 'classroom:class_student_list' %}">
+    <p>Search Student: <input type='search' name='q' placeholder='Search'></p>
+  </form>
+  <div class="row">
+  {% for student in class_students_list %}
+  <div class="col-6 col-md-4">
+  <div class="student-box">
+    <div class="imgBx">
+      {% if student.student_profile_pic %}
+      <img src="{{ student.student_profile_pic.url }}" alt="">
+      {% else %}
+      {% if forloop.counter0|divisibleby:"2" %}
+      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
+      {% else %}
+      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="">
+      {% endif %}
+      {% endif %}
+    </div>
+    <div class="content">
+      <h3>{{ student.name }}</h3>
+      <p><i class="far fa-user"></i> Username: {{ student.user.username }}</p>
+      <p><i class="fal fa-user-tag"></i> Roll No.: {{ student.roll_no }}</p>
+      <p><i class="far fa-phone"></i> Phone: {{ student.phone }}</p>
+      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ student.email }}</p>
+      <a href="{% url 'classroom:student_marks_list' pk=student.pk %}"><p class="add-button">View Marks Profile</p></a>
+    </div>
+  </div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+</div>
+
+
+<!--
+<div class="jumbotron">
+  {% if teacher.class_students.count == 0 %}
+    <h1>No students in the class.</h1>
+    {% else %}
+    <h1>Your class students list.</h1>
+    <br>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Roll No.</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email Id</th>
+          <th scope="col"> </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in teacher.class_students.all %}
+        <tr>
+          <th>{{ student.roll_no }}</th>
+          <th>{{ student.name }}</th>
+          <th>{{ student.email }}</th>
+          <th> <a class="btn btn-primary" href="{% url 'classroom:student_marks_list' pk=student.pk %}">View Marks Profile</a> </th>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+    <p><a class="btn btn-danger" href="{% url 'classroom:write_notice' %}">Add Notice</a></p>
+  {% endif %}
+
+</div>
+-->
+{% endblock %}
