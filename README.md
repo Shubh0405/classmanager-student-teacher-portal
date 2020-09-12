@@ -17,8 +17,6 @@ Class Manager contains more features like:
 11. User can add profile picture and edit their profile through edit profile.
 12. User can also change their password if necessary.
 
-#### You can visit the website by clicking on the link http://shubh0405.pythonanywhere.com/
-
 ## Screenshots
 
 ### Home Page
