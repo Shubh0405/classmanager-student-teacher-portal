@@ -6,7 +6,7 @@ django-misaka==0.2.1
 houdini.py==0.1.0
 misaka==2.1.1
 pycparser==2.20
-Pygments==2.6.1
+Pygments==2.7.4
 pytz==2020.1
 soupsieve==2.0.1
 sqlparse==0.3.1
