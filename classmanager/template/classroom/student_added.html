@@ -1,7 +1,142 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
-<h1>Student added successfully in classroom.</h1>
-<h3>Go to All Students List to add more students.</h3>
+<div class="success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <i class="fas fa-user-check"></i>
+    </div>
+    
+    <h2 class="success-title">Student Added Successfully</h2>
+    <p class="success-description">The student has been successfully added to your classroom.</p>
+    
+    <div class="success-actions">
+      <a href="{% url 'classroom:student_list' %}" class="btn-primary">
+        <i class="fas fa-users"></i>
+        View All Students
+      </a>
+      
+      <a href="{% url 'classroom:add_student' %}" class="btn-secondary">
+        <i class="fas fa-user-plus"></i>
+        Add Another Student
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .success-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem 1rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .success-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .success-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .success-description {
+    color: #718096;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .success-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: #4299e1;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background-color: #e2e8f0;
+    color: #4a5568;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #cbd5e0;
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: #2d3748;
+  }
+  
+  .btn-primary i, .btn-secondary i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .success-actions {
+      flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .success-card {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
 
 {% endblock %}

@@ -2,66 +2,384 @@
 {% load static %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-bullhorn page-icon"></i>
+    Class Notices
+  </h1>
+  <p class="page-subtitle">Important announcements from your teachers</p>
+</div>
+
 <div class="container">
-
   {% if student.class_notice.count == 0 %}
-  <h2>No Notice Yet.</h2>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-bell-slash"></i>
+      </div>
+      <h2 class="empty-title">No Notices Available</h2>
+      <p class="empty-description">There are no announcements at this time. Check back later for updates from your teachers.</p>
+    </div>
   {% else %}
-
-  {% for notice in student.class_notice.all %}
-  <div class="notice">
-  <div class="row">
-    <div class="col-md-1">
-      {% if notice.teacher.teacher_profile_pic %}
-      <img src="{{ notice.teacher.teacher_profile_pic.url }}" class="notice-img">
-      {% else %}
-      <img src="{% static 'images/login-avatar.PNG' %}" class="notice-img">
-      {% endif %}
+    <div class="notices-list">
+      {% for notice in student.class_notice.all %}
+        <div class="notice-card">
+          <div class="notice-header">
+            <div class="teacher-info">
+              <div class="teacher-avatar">
+                {% if notice.teacher.teacher_profile_pic %}
+                  <img src="{{ notice.teacher.teacher_profile_pic.url }}" alt="{{ notice.teacher.name }}">
+                {% else %}
+                  <img src="{% static 'images/login-avatar.PNG' %}" alt="Default Avatar">
+                {% endif %}
+              </div>
+              <div class="teacher-details">
+                <h3 class="teacher-name">{{ notice.teacher.name }}</h3>
+                <p class="teacher-subject">{{ notice.teacher.subject_name }}</p>
+              </div>
+            </div>
+            <div class="notice-meta">
+              <div class="notice-date">
+                <i class="far fa-calendar-alt"></i>
+                <span>{{ notice.created_at|date:"M d, Y" }}</span>
+              </div>
+              <div class="notice-time">
+                <i class="far fa-clock"></i>
+                <span>{{ notice.created_at|time:"g:i A" }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="notice-content">
+            {{ notice.message_html|safe }}
+          </div>
+          
+          <div class="notice-footer">
+            <div class="notice-tag">
+              <i class="fas fa-tag"></i>
+              <span>Announcement</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-    <div class="col-md-11">
-      <div class="notice-details">
-        <div class="row">
-        <div class="col-md-3">
-          <h5>By: {{ notice.teacher.name }}</h5>
-        </div>
-        <div class="col-md-3">
-          <h5>Subject: {{ notice.teacher.subject_name }}</h5>
-        </div>
-        <div class="col-md-3">
-          <h5>{{ notice.created_at }}</h5>
-        </div>
-        </div>
-        <hr>
-        <h2>{{ notice.message_html|safe }}</h2>
-        </div>
-    </div>
-  </div>
-  </div>
-  {% endfor %}
   {% endif %}
 </div>
 
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-description {
+    max-width: 400px;
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Notices list styling */
+  .notices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Notice card styling */
+  .notice-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideUp 0.5s ease forwards;
+    opacity: 0;
+  }
+  
+  .notice-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notices-list .notice-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  
+  .notices-list .notice-card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .notices-list .notice-card:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  
+  .notices-list .notice-card:nth-child(n+4) {
+    animation-delay: 0.4s;
+  }
+  
+  /* Notice header */
+  .notice-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .teacher-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .teacher-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .teacher-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .teacher-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .teacher-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .teacher-subject {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4a5568;
+  }
+  
+  .notice-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .notice-date, .notice-time {
+    display: flex;
+    align-items: center;
+    color: #718096;
+    font-size: 0.9rem;
+  }
+  
+  .notice-date i, .notice-time i {
+    margin-right: 0.5rem;
+    color: #4299e1;
+  }
+  
+  /* Notice content */
+  .notice-content {
+    padding: 1.5rem;
+  }
+  
+  .notice-content h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2d3748;
+    line-height: 1.4;
+  }
+  
+  .notice-content p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  
+  .notice-content a {
+    color: #4299e1;
+    text-decoration: none;
+  }
+  
+  .notice-content a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Notice footer */
+  .notice-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .notice-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .notice-tag i {
+    margin-right: 0.4rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .notice-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .notice-meta {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+      align-self: flex-start;
+      margin-top: 0.5rem;
+      margin-left: 3.5rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .notice-header {
+      padding: 1.25rem;
+    }
+    
+    .notice-content {
+      padding: 1.25rem;
+    }
+    
+    .notice-footer {
+      padding: 0.75rem 1.25rem;
+    }
+    
+    .teacher-avatar {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .teacher-name {
+      font-size: 1rem;
+    }
+    
+    .notice-meta {
+      margin-left: 0;
+    }
+  }
+</style>
 
-
-<!--
-{% if student.class_notice.count == 0 %}
-<h2>No notice yet</h2>
-{% else %}
-{% for notice in student.class_notice.all %}
-<div class="">
-  <h3>{{ notice.message_html|safe }}</h3>
-  <div class="row">
-    <div class="col-md-6">
-      <p>By: {{ notice.teacher.name }}</p>
-    </div>
-    <div class="col-md-6">
-      <p>Date: {{ notice.created_at }}</p>
-    </div>
-  </div>
-</div>
-{% endfor %}
-{% endif %}
-
--->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Format notice content - find any h2 tags and apply styling
+    const noticeContents = document.querySelectorAll('.notice-content');
+    noticeContents.forEach(content => {
+      const h2Elements = content.querySelectorAll('h2');
+      h2Elements.forEach(h2 => {
+        h2.style.fontSize = '1.25rem';
+        h2.style.marginBottom = '1rem';
+        h2.style.color = '#2d3748';
+      });
+    });
+  });
+</script>
 
 {% endblock %}

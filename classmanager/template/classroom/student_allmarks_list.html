@@ -1,35 +1,472 @@
 {% extends "classroom/base.html" %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-chart-bar page-icon"></i>
+    Academic Performance
+  </h1>
+  <p class="page-subtitle">View all your assessment scores and progress</p>
+</div>
+
 <div class="container">
-<div class="jumbotron">
-  {% if student.marks.count == 0  %}
-  <h2>No marks are published yet!</h2>
+  {% if student.marks.count == 0 %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <h2 class="empty-title">No Marks Available</h2>
+      <p class="empty-description">No assessment scores have been published yet. Check back later!</p>
+    </div>
   {% else %}
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Sr. no.</th>
-        <th scope="col">Subject</th>
-        <th scope="col">Teacher Name</th>
-        <th scope="col">Marks Obtained</th>
-        <th scope="col">Max Marks</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for object in student.marks.all %}
-      <tr>
-        <th scope="row">{{ forloop.counter }}</th>
-        <th>{{ object.subject_name }}</th>
-        <th>{{ object.teacher.name }}</th>
-        <th>{{ object.marks_obtained }}</th>
-        <th>{{ object.maximum_marks }}</th>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <div class="marks-card">
+      <div class="card-header-custom">
+        <div class="header-left">
+          <h2>Assessment Scores</h2>
+          <p>All subjects and evaluations</p>
+        </div>
+        <div class="header-right">
+          <div class="total-assessments">
+            <span class="assessment-count">{{ student.marks.count }}</span>
+            <span class="assessment-label">Assessments</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="marks-table-container">
+        <table class="marks-table">
+          <thead>
+            <tr>
+              <th class="column-small">#</th>
+              <th class="column-subject">Subject</th>
+              <th class="column-teacher">Teacher</th>
+              <th class="column-score">Score</th>
+              <th class="column-max">Max</th>
+              <th class="column-progress">Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for object in student.marks.all %}
+              {% with percentage=object.marks_obtained|floatformat:0|add:0 %}
+              <tr class="mark-row" data-percentage="{{ percentage }}">
+                <td class="column-small">{{ forloop.counter }}</td>
+                <td class="column-subject">
+                  <div class="subject-info">
+                    <div class="subject-icon">
+                      <i class="fas fa-book"></i>
+                    </div>
+                    <span>{{ object.subject_name }}</span>
+                  </div>
+                </td>
+                <td class="column-teacher">
+                  <div class="teacher-info">
+                    <i class="fas fa-user-tie teacher-icon"></i>
+                    {{ object.teacher.name }}
+                  </div>
+                </td>
+                <td class="column-score">
+                  <span class="score-value">{{ object.marks_obtained }}</span>
+                </td>
+                <td class="column-max">{{ object.maximum_marks }}</td>
+                <td class="column-progress">
+                  <div class="progress-wrapper">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: {% widthratio object.marks_obtained object.maximum_marks 100 %}%"></div>
+                    </div>
+                    <span class="progress-text">{% widthratio object.marks_obtained object.maximum_marks 100 %}%</span>
+                  </div>
+                </td>
+              </tr>
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   {% endif %}
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+  }
+  
+  .empty-description {
+    max-width: 400px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Marks card styling */
+  .marks-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease;
+    overflow: hidden;
+  }
+  
+  .card-header-custom {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-accent);
+  }
+  
+  .header-left h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+  }
+  
+  .header-left p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  
+  .total-assessments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(67, 97, 238, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .assessment-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  
+  .assessment-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  /* Table styling */
+  .marks-table-container {
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
+  
+  .marks-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .marks-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .marks-table th {
+    padding: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+    background-color: var(--card-bg);
+  }
+  
+  .marks-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+  }
+  
+  .mark-row {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .mark-row:hover {
+    background-color: var(--bg-accent);
+  }
+  
+  /* Table columns */
+  .column-small {
+    width: 60px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  
+  .column-subject {
+    width: 25%;
+  }
+  
+  .column-teacher {
+    width: 20%;
+  }
+  
+  .column-score, .column-max {
+    width: 10%;
+    text-align: center;
+  }
+  
+  .column-progress {
+    width: 25%;
+  }
+  
+  /* Subject info */
+  .subject-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .subject-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  /* Teacher info */
+  .teacher-info {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+  }
+  
+  .teacher-icon {
+    color: var(--text-muted);
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Score styling */
+  .score-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-color);
+  }
+  
+  mark-row[data-percentage="100"] .score-value,
+  .mark-row[data-percentage="90"] .score-value,
+  .mark-row[data-percentage="80"] .score-value {
+    color: #38b2ac;
+  }
+  
+  .mark-row[data-percentage="70"] .score-value,
+  .mark-row[data-percentage="60"] .score-value {
+    color: #4299e1;
+  }
+  
+  .mark-row[data-percentage="50"] .score-value,
+  .mark-row[data-percentage="40"] .score-value {
+    color: #ed8936;
+  }
+  
+  .mark-row[data-percentage="30"] .score-value,
+  .mark-row[data-percentage="20"] .score-value,
+  .mark-row[data-percentage="10"] .score-value,
+  .mark-row[data-percentage="0"] .score-value {
+    color: #e53e3e;
+  }
+  
+  /* Progress bar */
+  .progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-grow: 1;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(to right, #4361ee, #3a56d4);
+    transition: width 1s ease-in-out;
+  }
+  
+  .mark-row[data-percentage="100"] .progress-fill,
+  .mark-row[data-percentage="90"] .progress-fill,
+  .mark-row[data-percentage="80"] .progress-fill {
+    background: linear-gradient(to right, #319795, #38b2ac);
+  }
+  
+  .mark-row[data-percentage="70"] .progress-fill,
+  .mark-row[data-percentage="60"] .progress-fill {
+    background: linear-gradient(to right, #3182ce, #4299e1);
+  }
+  
+  .mark-row[data-percentage="50"] .progress-fill,
+  .mark-row[data-percentage="40"] .progress-fill {
+    background: linear-gradient(to right, #dd6b20, #ed8936);
+  }
+  
+  .mark-row[data-percentage="30"] .progress-fill,
+  .mark-row[data-percentage="20"] .progress-fill,
+  .mark-row[data-percentage="10"] .progress-fill,
+  .mark-row[data-percentage="0"] .progress-fill {
+    background: linear-gradient(to right, #c53030, #e53e3e);
+  }
+  
+  .progress-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    width: 45px;
+    text-align: right;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .marks-table th, .marks-table td {
+      padding: 0.75rem;
+    }
+    
+    .subject-icon {
+      width: 30px;
+      height: 30px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .column-progress {
+      display: none;
+    }
+    
+    .column-subject {
+      width: auto;
+    }
+    
+    .column-teacher {
+      width: 30%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .card-header-custom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .header-right {
+      margin-top: 1rem;
+      align-self: flex-end;
+    }
+    
+    .column-teacher {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Animate progress bars on load
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      const progressBars = document.querySelectorAll('.progress-fill');
+      progressBars.forEach(bar => {
+        const targetWidth = bar.style.width;
+        bar.style.width = '0%';
+        
+        setTimeout(() => {
+          bar.style.width = targetWidth;
+        }, 200);
+      });
+    }, 300);
+  });
+</script>
 
 {% endblock %}

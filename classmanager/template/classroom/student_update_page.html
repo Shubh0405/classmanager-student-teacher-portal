@@ -2,19 +2,331 @@
 {% load bootstrap4 %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-user-edit page-icon"></i>
+    Update Profile
+  </h1>
+  <p class="page-subtitle">Modify your personal information and settings</p>
+</div>
+
 <div class="container">
-<div class="jumbotron">
   {% if profile_updated %}
-  <h1>Your profile is updated successfully.</h1>
+    <div class="success-card">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h2 class="success-title">Profile Updated Successfully</h2>
+      <p class="success-description">Your profile information has been saved.</p>
+      <a href="{% url 'classroom:student_detail' pk=user.pk %}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Profile
+      </a>
+    </div>
   {% else %}
-  <h1>Update Profile</h1>
-  <form enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input class="btn btn-primary" type="submit" name="" value="Submit">
-  </form>
+    <div class="form-card">
+      <div class="form-header">
+        <div class="form-header-icon">
+          <i class="fas fa-user-cog"></i>
+        </div>
+        <div class="form-header-text">
+          <h2>Personal Information</h2>
+          <p>Update your details below</p>
+        </div>
+      </div>
+      
+      <div class="form-body">
+        <form enctype="multipart/form-data" method="post" class="profile-form">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          <div class="form-actions">
+            <a href="javascript:history.back()" class="btn-cancel">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+            <button type="submit" class="btn-save">
+              <i class="fas fa-save"></i>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   {% endif %}
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Success message styling */
+  .success-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .success-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .success-description {
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #4299e1;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .back-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .back-button:hover {
+    background-color: #3182ce;
+    text-decoration: none;
+    color: white;
+  }
+  
+  /* Form card styling */
+  .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+    margin-bottom: 2rem;
+  }
+  
+  /* Form header */
+  .form-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .form-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .form-header-text h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-header-text p {
+    margin: 0;
+    color: #718096;
+    font-size: 0.95rem;
+  }
+  
+  /* Form body */
+  .form-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  /* Bootstrap form styling customizations */
+  .profile-form .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-form label {
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .profile-form .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    height: auto;
+    color: #2d3748;
+    background-color: #f7fafc;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-form .form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background-color: #fff;
+  }
+  
+  .profile-form .custom-file-label {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    height: auto;
+    background-color: #f7fafc;
+  }
+  
+  .profile-form .custom-file-label::after {
+    height: auto;
+    padding: 0.75rem 1rem;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-weight: 500;
+  }
+  
+  .profile-form .text-muted {
+    color: #718096 !important;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2.5rem;
+    gap: 1rem;
+  }
+  
+  .btn-cancel {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-cancel i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #cbd5e0;
+    color: #2d3748;
+    text-decoration: none;
+  }
+  
+  .btn-save {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #4299e1;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .btn-save i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-save:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+    
+    .btn-cancel, .btn-save {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
 
 {% endblock %}

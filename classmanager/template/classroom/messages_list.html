@@ -2,59 +2,299 @@
 {% load static %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-inbox page-icon"></i>
+    Message Inbox
+  </h1>
+  <p class="page-subtitle">Messages from your students</p>
+</div>
+
 <div class="container">
   {% if teacher.messages.count == 0 %}
-  <h2>No messages yet.</h2>
-  {% else %}
-  {% for mssg in teacher.messages.all %}
-  <div class="notice">
-    <div class="row">
-      <div class="col-md-1">
-        {% if mssg.student.student_profile_pic %}
-        <img src="{{ mssg.student.student_profile_pic.url }}" class="notice-img">
-        {% else %}
-        <img src="{% static 'images/login-avatar.PNG' %}" class="notice-img">
-        {% endif %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-envelope-open"></i>
       </div>
-      <div class="col-md-11">
-        <div class="notice-details">
-          <div class="row">
-            <div class="col-md-3">
-              <h5>By: {{ mssg.student.name }}</h5>
-            </div>
-            <div class="col-md-3">
-              <h5>{{ mssg.created_at }}</h5>
+      <h3>No Messages Yet</h3>
+      <p>When students send you messages, they will appear here.</p>
+    </div>
+  {% else %}
+    <div class="messages-container">
+      {% for mssg in teacher.messages.all %}
+        <div class="message-card">
+          <div class="message-header">
+            <div class="sender-info">
+              <div class="sender-avatar">
+                {% if mssg.student.student_profile_pic %}
+                  <img src="{{ mssg.student.student_profile_pic.url }}" alt="{{ mssg.student.name }}">
+                {% else %}
+                  <img src="{% static 'images/login-avatar.PNG' %}" alt="Default Avatar">
+                {% endif %}
+              </div>
+              <div class="sender-details">
+                <h4 class="sender-name">{{ mssg.student.name }}</h4>
+                <span class="message-date">{{ mssg.created_at|date:"M d, Y • g:i A" }}</span>
+              </div>
             </div>
           </div>
-          <hr>
-          <h2>{{ mssg.message_html|safe }}</h2>
+          
+          <div class="message-content">
+            {{ mssg.message_html|safe }}
+          </div>
+          
+          <div class="message-actions">
+            <a href="#" class="message-action-btn reply-btn">
+              <i class="fas fa-reply"></i> Reply
+            </a>
+            <a href="#" class="message-action-btn mark-btn">
+              <i class="fas fa-check-circle"></i> Mark as Read
+            </a>
+          </div>
         </div>
-      </div>
+      {% endfor %}
     </div>
-  </div>
-  {% endfor %}
   {% endif %}
 </div>
-<!--
-{% if teacher.messages.count == 0 %}
-<h2>No messages yet.</h2>
-{% else %}
 
-{% for mssg in teacher.messages.all %}
-<div class="">
-  <h3> {{ mssg.message_html|safe }} </h3>
-  <div class="row">
-    <div class="col-md-6">
-      <p>By: {{ mssg.student.name }}</p>
-    </div>
-    <div class="col-md-6">
-      <p>Date: {{ mssg.created_at }}</p>
-    </div>
-  </div>
-</div>
-{% endfor %}
-{% endif %}
-
--->
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  /* Messages container */
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Message card styling */
+  .message-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .message-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+  }
+  
+  .message-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(76, 201, 240, 0.05));
+  }
+  
+  .sender-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .sender-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+    border: 2px solid white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+  
+  .sender-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .sender-details {
+    flex-grow: 1;
+  }
+  
+  .sender-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.25rem;
+  }
+  
+  .message-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .message-content {
+    padding: 1.5rem;
+    color: var(--text-color);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  
+  .message-content h2 {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    font-weight: normal;
+  }
+  
+  .message-actions {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background-color: var(--bg-accent);
+  }
+  
+  .message-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  
+  .message-action-btn i {
+    margin-right: 0.5rem;
+  }
+  
+  .reply-btn {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .reply-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .mark-btn {
+    background-color: white;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+  
+  .mark-btn:hover {
+    background-color: var(--bg-color);
+    transform: translateY(-2px);
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .message-header {
+      padding: 1rem;
+    }
+    
+    .message-content {
+      padding: 1rem;
+    }
+    
+    .message-actions {
+      padding: 0.75rem 1rem;
+      flex-direction: column;
+    }
+    
+    .message-action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .sender-avatar {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .sender-name {
+      font-size: 1rem;
+    }
+  }
+</style>
 
 {% endblock %}

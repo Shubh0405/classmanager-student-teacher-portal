@@ -2,69 +2,457 @@
 {% load static %}
 {% block content %}
 
-<div class="student-list">
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-chalkboard-teacher page-icon"></i>
+    Teachers Directory
+  </h1>
+  <p class="page-subtitle">Connect with your instructors and send messages</p>
+</div>
+
 <div class="container">
-  <form method='GET' action="{% url 'classroom:teachers_list' %}">
-    <p>Serch Teacher: <input type='search' name='q' placeholder='Search'></p>
-  </form>
-  <div class="row">
-  {% for teacher in teachers_list %}
-  <div class="col-6 col-md-4">
-  <div class="student-box">
-    <div class="imgBx">
-      {% if teacher.teacher_profile_pic %}
-      <img src="{{ teacher.teacher_profile_pic.url }}" alt="">
-      {% else %}
-      {% if forloop.counter0|divisibleby:"2" %}
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
-      {% else %}
-      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="">
-      {% endif %}
-      {% endif %}
-    </div>
-    <div class="content">
-      <h3>{{ teacher.name }}</h3>
-      <p><i class="far fa-user"></i> Username: {{ teacher.user.username }}</p>
-      <p><i class="fas fa-books"></i> Subject Name: {{ teacher.subject_name }}</p>
-      <p><i class="far fa-phone"></i> Phone: {{ teacher.phone }}</p>
-      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ teacher.email }}</p>
-      <a href="{% url 'classroom:write_message' pk=teacher.pk %}"><p class="add-button">Message</p> </a>
-    </div>
-  </div>
-  </div>
-  {% endfor %}
-  </div>
-</div>
-</div>
-
-
-
-<!--
-  <div class="jumbotron">
-    <h1>Given below is the list of all Teacher</h1>
-    <h3>Click on "message" to message teacher</h3>
-
-    <form method='GET' action="{% url 'classroom:teachers_list' %}">
-      <input type='search' name='q' placeholder='Search'>
+  <div class="search-container">
+    <form method="GET" action="{% url 'classroom:teachers_list' %}" class="search-form">
+      <div class="search-input-group">
+        <i class="fas fa-search search-icon"></i>
+        <input type="search" name="q" placeholder="Search for teachers..." class="search-input">
+        <button type="submit" class="search-button">Search</button>
+      </div>
     </form>
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Subject</th>
-          <th scope="col"> </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for teacher in teachers_list %}
-        <tr>
-          <th>{{ teacher.name }}</th>
-          <th>{{ teacher.subject_name }}</th>
-          <th> <a class="btn btn-primary" href="{% url 'classroom:write_message' pk=teacher.pk %}">Message</a> </th>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
   </div>
--->
+  
+  <div class="teachers-list">
+    {% if teachers_list %}
+      <div class="row">
+        {% for teacher in teachers_list %}
+          <div class="col-lg-4 col-md-6 col-sm-12 teacher-card-container">
+            <div class="teacher-card">
+              <div class="teacher-header">
+                <div class="teacher-avatar">
+                  {% if teacher.teacher_profile_pic %}
+                    <img src="{{ teacher.teacher_profile_pic.url }}" alt="{{ teacher.name }}">
+                  {% else %}
+                    {% if forloop.counter0|divisibleby:"2" %}
+                      <img src="{% static 'images/login-avatar.PNG' %}" alt="Default Avatar">
+                    {% else %}
+                      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="Default Avatar">
+                    {% endif %}
+                  {% endif %}
+                </div>
+                <div class="teacher-name">
+                  <h3>{{ teacher.name }}</h3>
+                  <span class="teacher-subject">{{ teacher.subject_name }}</span>
+                </div>
+              </div>
+              
+              <div class="teacher-details">
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="detail-content">
+                    <span class="detail-label">Username</span>
+                    <span class="detail-value">{{ teacher.user.username }}</span>
+                  </div>
+                </div>
+                
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="fas fa-book"></i>
+                  </div>
+                  <div class="detail-content">
+                    <span class="detail-label">Subject</span>
+                    <span class="detail-value">{{ teacher.subject_name }}</span>
+                  </div>
+                </div>
+                
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                  <div class="detail-content">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">{{ teacher.phone }}</span>
+                  </div>
+                </div>
+                
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="far fa-envelope"></i>
+                  </div>
+                  <div class="detail-content">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">{{ teacher.email }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="teacher-actions">
+                <a href="{% url 'classroom:write_message' pk=teacher.pk %}" class="message-button">
+                  <i class="fas fa-paper-plane"></i>
+                  <span>Send Message</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-user-slash"></i>
+        </div>
+        <h2 class="empty-title">No Teachers Found</h2>
+        <p class="empty-description">No teachers match your search criteria. Try different search terms or check back later.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Search styling */
+  .search-container {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .search-form {
+    width: 100%;
+  }
+  
+  .search-input-group {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 0 0.5rem;
+    transition: box-shadow 0.3s;
+  }
+  
+  .search-input-group:focus-within {
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.3), 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-icon {
+    color: #a0aec0;
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .search-input {
+    flex-grow: 1;
+    border: none;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+    color: #2d3748;
+  }
+  
+  .search-button {
+    background-color: #4299e1;
+    border: none;
+    color: white;
+    padding: 0.65rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #3182ce;
+    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  /* Responsive styles for search */
+  @media (max-width: 768px) {
+    .search-input-group {
+      flex-direction: column;
+      padding: 0;
+    }
+    
+    .search-icon {
+      display: none;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .search-button {
+      width: 100%;
+      border-radius: 0 0 8px 8px;
+      padding: 0.75rem;
+    }
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-description {
+    max-width: 400px;
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Teacher cards */
+  .teachers-list {
+    margin-bottom: 2rem;
+  }
+  
+  .teacher-card-container {
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+  }
+  
+  .teacher-card-container:nth-child(1) { animation-delay: 0.1s; }
+  .teacher-card-container:nth-child(2) { animation-delay: 0.2s; }
+  .teacher-card-container:nth-child(3) { animation-delay: 0.3s; }
+  .teacher-card-container:nth-child(4) { animation-delay: 0.4s; }
+  .teacher-card-container:nth-child(5) { animation-delay: 0.5s; }
+  .teacher-card-container:nth-child(6) { animation-delay: 0.6s; }
+  
+  .teacher-card {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .teacher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Teacher header */
+  .teacher-header {
+    padding: 1.5rem 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .teacher-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+  
+  .teacher-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .teacher-name h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .teacher-subject {
+    font-size: 0.9rem;
+    color: #4299e1;
+    font-weight: 500;
+  }
+  
+  /* Teacher details */
+  .teacher-details {
+    padding: 1.25rem 1.5rem;
+    flex-grow: 1;
+  }
+  
+  .detail-item {
+    display: flex;
+    margin-bottom: 0.75rem;
+  }
+  
+  .detail-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detail-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .detail-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-label {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-bottom: 0.1rem;
+  }
+  
+  .detail-value {
+    font-size: 0.9rem;
+    color: #2d3748;
+    word-break: break-word;
+  }
+  
+  /* Teacher actions */
+  .teacher-actions {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .message-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    background-color: #4299e1;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .message-button:hover {
+    background-color: #3182ce;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .message-button i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .search-form {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .search-button {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .teacher-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .teacher-avatar {
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+
 {% endblock %}

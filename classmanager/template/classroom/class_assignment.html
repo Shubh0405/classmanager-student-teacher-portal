@@ -1,41 +1,392 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
-<div class="container">
-  <div class="jumbotron">
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-tasks page-icon"></i>
+    Assignments
+  </h1>
+  <p class="page-subtitle">View and submit your course assignments</p>
+</div>
 
-{% if student.student_assignment.count == 0 %}
-  <h2>No assignments Yet</h2>
-{% else %}
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Assignment Name</th>
-        <th scope="col">Uploaded By</th>
-        <th scope="col">Uploaded Date</th>
-        <th scope="col">Download</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
+<div class="container">
+  {% if student.student_assignment.count == 0 %}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <h2 class="empty-title">No Assignments Yet</h2>
+      <p class="empty-description">You don't have any assignments at this time. Check back later for new tasks from your teachers.</p>
+    </div>
+  {% else %}
+    <div class="assignment-list">
       {% for assignment in student.student_assignment.all %}
-        <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ assignment.assignment_name }}</td>
-          <td>{{ assignment.teacher }}</td>
-          <td>{{ assignment.created_at }}</td>
-          <td><a href="{{ assignment.assignment.url }}" class="btn btn-primary" target="_blank">Download</a></td>
-          {% if assignment in assignment_list %}
-            <td>Submitted</td>
-          {% else %}
-            <td><a href="{% url 'classroom:submit_assignment' id=assignment.id %}" class="btn btn-primary">Submit</a></td>
-          {% endif %}
-        </tr>
+        <div class="assignment-card">
+          <div class="assignment-header">
+            <div class="assignment-name-container">
+              <div class="assignment-icon">
+                <i class="fas fa-file-pdf"></i>
+              </div>
+              <h3 class="assignment-name">{{ assignment.assignment_name }}</h3>
+            </div>
+            
+            {% if assignment in assignment_list %}
+              <div class="status-badge submitted">
+                <i class="fas fa-check"></i>
+                <span>Submitted</span>
+              </div>
+            {% else %}
+              <div class="status-badge pending">
+                <i class="fas fa-clock"></i>
+                <span>Pending</span>
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="assignment-details">
+            <div class="detail-group">
+              <div class="detail-label">
+                <i class="fas fa-user"></i>
+                <span>Teacher</span>
+              </div>
+              <div class="detail-value">{{ assignment.teacher }}</div>
+            </div>
+            
+            <div class="detail-group">
+              <div class="detail-label">
+                <i class="far fa-calendar-alt"></i>
+                <span>Assigned</span>
+              </div>
+              <div class="detail-value">{{ assignment.created_at|date:"M d, Y" }}</div>
+            </div>
+            
+            <div class="detail-group">
+              <div class="detail-label">
+                <i class="far fa-clock"></i>
+                <span>Time</span>
+              </div>
+              <div class="detail-value">{{ assignment.created_at|time:"g:i A" }}</div>
+            </div>
+          </div>
+          
+          <div class="assignment-actions">
+            <a href="{{ assignment.assignment.url }}" class="action-button download" target="_blank">
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </a>
+            
+            {% if assignment not in assignment_list %}
+              <a href="{% url 'classroom:submit_assignment' id=assignment.id %}" class="action-button submit">
+                <i class="fas fa-upload"></i>
+                <span>Submit</span>
+              </a>
+            {% endif %}
+          </div>
+        </div>
       {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+    </div>
+  {% endif %}
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-description {
+    max-width: 400px;
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Assignment list styling */
+  .assignment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  /* Assignment card styling */
+  .assignment-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideUp 0.5s ease forwards;
+    opacity: 0;
+  }
+  
+  .assignment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .assignment-list .assignment-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  
+  .assignment-list .assignment-card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .assignment-list .assignment-card:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  
+  .assignment-list .assignment-card:nth-child(n+4) {
+    animation-delay: 0.4s;
+  }
+  
+  /* Assignment header */
+  .assignment-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .assignment-name-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .assignment-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+  }
+  
+  .assignment-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .status-badge {
+    padding: 0.4rem 0.75rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .status-badge i {
+    margin-right: 0.5rem;
+  }
+  
+  .status-badge.submitted {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+  }
+  
+  .status-badge.pending {
+    background-color: rgba(237, 137, 54, 0.1);
+    color: #dd6b20;
+  }
+  
+  /* Assignment details */
+  .assignment-details {
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .detail-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-label {
+    display: flex;
+    align-items: center;
+    color: #718096;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .detail-label i {
+    margin-right: 0.5rem;
+  }
+  
+  .detail-value {
+    font-size: 0.95rem;
+    color: #2d3748;
+    font-weight: 500;
+  }
+  
+  /* Assignment actions */
+  .assignment-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .action-button {
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .action-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .action-button.download {
+    background-color: #e2e8f0;
+    color: #4a5568;
+  }
+  
+  .action-button.download:hover {
+    background-color: #cbd5e0;
+  }
+  
+  .action-button.submit {
+    background-color: #4299e1;
+    color: white;
+  }
+  
+  .action-button.submit:hover {
+    background-color: #3182ce;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .assignment-details {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .assignment-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .status-badge {
+      margin-top: 0.75rem;
+      align-self: flex-start;
+    }
+    
+    .assignment-details {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .assignment-actions {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .action-button {
+      width: 100%;
+    }
+  }
+</style>
+
 {% endblock %}

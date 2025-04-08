@@ -3,97 +3,740 @@
 {% block content %}
 
 {% if messages %}
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
+<div class="floating-alerts">
   {% for message in messages %}
-    <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+    <div class="custom-alert {% if message.tags %} alert-{{ message.tags }}{% endif %} fade-in">
+      <div class="alert-content">{{ message|safe }}</div>
+      <button type="button" class="alert-close" data-dismiss="alert">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
   {% endfor %}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
 </div>
 {% endif %}
 
-<div class="banner">
-      <img src="{% static 'images/first.PNG' %}" alt="">
-      <div class="content">
-        <h1>Class Manager</h1>
-        <p>A Student-Teacher Portal</p>
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <div class="hero-overlay"></div>
+  <img src="{% static 'images/first.PNG' %}" alt="" class="hero-image">
+  <div class="hero-content">
+    <h1 class="hero-title">Class Manager</h1>
+    <p class="hero-subtitle">A Student-Teacher Portal</p>
+    {% if user.is_authenticated %}
+      {% if user.is_teacher %}
+        <a href="{% url 'classroom:upload_assignment' %}" class="hero-button">
+          <i class="fas fa-chevron-right"></i> Go to Dashboard
+        </a>
+      {% else %}
+        <a href="{% url 'classroom:class_assignment' %}" class="hero-button">
+          <i class="fas fa-chevron-right"></i> Go to Dashboard
+        </a>
+      {% endif %}
+    {% else %}
+      <div class="hero-buttons">
+        <a href="{% url 'classroom:login' %}" class="hero-button">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="{% url 'classroom:signup' %}" class="hero-button primary">
+          <i class="fas fa-user-plus"></i> Sign Up
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- About Section -->
+<div class="section about-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>About Us</h2>
+      <div class="section-underline"></div>
+    </div>
+    <div class="about-card">
+      <p>Class Manager is a student-teacher portal with various classroom features like uploading assignments, submissions, Class Notice and many more. Students and Teacher can login in the portal and can experience interactive classroom experience online.</p>
+      <p>One of the most powerful features of class manager is its student managing abilities. Teacher can easily manage their students and keep them updated about all of the activities in class.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Services Section -->
+<div class="section services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Our Services</h2>
+      <div class="section-underline"></div>
+    </div>
+    
+    <div class="service-cards">
+      <!-- Teacher Card -->
+      <div class="service-card">
+        <div class="card-header">
+          <div class="card-icon teacher-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <h3>For Teachers</h3>
+        </div>
+        <div class="card-image">
+          <img src="{% static 'images/teacher.PNG' %}" alt="Teacher Features">
+        </div>
+        <div class="card-content">
+          <ol class="feature-list">
+            <li><i class="fas fa-check-circle"></i> Teachers can add student in their class through Add Student option.</li>
+            <li><i class="fas fa-check-circle"></i> After adding students in their class, Teacher can give or edit their class students marks.</li>
+            <li><i class="fas fa-check-circle"></i> Teachers can also write notice which will be send to all students in their class.</li>
+            <li><i class="fas fa-check-circle"></i> Teachers can upload assignments through upload assignment options.</li>
+            <li><i class="fas fa-check-circle"></i> Teacher can check their student's assignment submission and give them marks accordingly.</li>
+            <li><i class="fas fa-check-circle"></i> Students can message Teachers directly and their messages can be seen in Inbox.</li>
+            <li><i class="fas fa-check-circle"></i> Teacher can also all the marks given by them to a student by accessing their Marks profile and can edit their marks.</li>
+            <li><i class="fas fa-check-circle"></i> User can add profile pic through edit profile option.</li>
+          </ol>
+        </div>
+      </div>
+      
+      <!-- Student Card -->
+      <div class="service-card">
+        <div class="card-header">
+          <div class="card-icon student-icon">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <h3>For Students</h3>
+        </div>
+        <div class="card-image">
+          <img src="{% static 'images/homeimg.PNG' %}" alt="Student Features">
+        </div>
+        <div class="card-content">
+          <ol class="feature-list">
+            <li><i class="fas fa-check-circle"></i> Students can login in the portal and keep themselves updated of all the activities going on in the class.</li>
+            <li><i class="fas fa-check-circle"></i> Students can see the notice given by their teacher in the Class Notice option.</li>
+            <li><i class="fas fa-check-circle"></i> Students can download their assignments in the Assignments option and can also submit it their. (Once assignment is submitted, it can't be changed later.)</li>
+            <li><i class="fas fa-check-circle"></i> Students can contact any teacher through message option in All Teachers List.</li>
+            <li><i class="fas fa-check-circle"></i> Students can check their marks in the Marks option.</li>
+            <li><i class="fas fa-check-circle"></i> User can add profile pic through edit profile option.</li>
+          </ol>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="about">
-      <h1>About Us</h1>
-      <p>Class Manager is a student-teacher portal with various classroom features like uploading assignments, submissions, Class Notice and many more. Students and Teacher can login in the portal and can experience interactive classroom experience online.
-      One of the most powerful features of class manager is its student managing abilities. Teacher can easily manage their students and keep them updated about all of the activities in class.</p>
-    </div>
-
-    <div class="use-content">
-      <h1>Our Services</h1>
-      <div class="row">
-        <div class="col-12 col-md-6">
-          <div class="box">
-            <div class="imgBx">
-              <img src="{% static 'images/teacher.PNG' %}" alt="">
-            </div>
-            <div class="content">
-              <h3>For Teacher</h3>
-              <ol>
-                <li>Teachers can add student in their class through Add Student option.</li>
-                <li>After adding students in their class, Teacher can give or edit their class students marks.</li>
-                <li>Teachers can also write notice which will be send to all students in their class.</li>
-                <li>Teachers can upload assignments through upload assignment options.</li>
-                <li>Teacher can check their student's assignment submission and give them marks accordingly.</li>
-                <li>Students can message Teachers directly and their messages can be seen in Inbox.</li>
-                <li>Teacher can also all the marks given by them to a student by accessing their Marks profile and can edit their marks.</li>
-                <li>User can add profile pic through edit profile option.</li>
-              </ol>
-            </div>
-          </div>
+<!-- Research Section -->
+<div class="section research-section">
+  <div class="container">
+    <div class="research-card">
+      <div class="research-image">
+        <img src="{% static 'images/mastery-based-education.PNG' %}" alt="Digital Learning">
+      </div>
+      <div class="research-content">
+        <div class="section-header left-aligned">
+          <h2>Digital Learning</h2>
+          <div class="section-underline"></div>
         </div>
-        <div class="col-12 col-md-6">
-          <div class="box">
-            <div class="imgBx">
-              <img src="{% static 'images/homeimg.PNG' %}" alt="">
-            </div>
-            <div class="content">
-              <h3>For Student</h3>
-              <ol>
-                <li>Students can login in the portal and keep themselves updated of all the activities going on in the class.</li>
-                <li>Students can see the notice given by their teacher in the Class Notice option.</li>
-                <li>Students can download their assignments in the Assignments option and can also submit it their. ( Once assignment is submitted, it can't be changed later. )</li>
-                <li> Students can contact any teacher through message option in All Teachers List. </li>
-                <li>Students can check their marks in the Marks option.</li>
-                <li>User can add profile pic through edit profile option.</li>
-              </ol>
+        <p>We surveyed over 16,000 teachers and administrators to better understand the state of digital learning. Class Manager provides all facilities that is needed for improvising digital learning.</p>
+        
+        <div class="research-stats">
+          <div class="stat-item">
+            <div class="stat-number">94<span>%</span></div>
+            <div class="stat-label">Improved Engagement</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">87<span>%</span></div>
+            <div class="stat-label">Teacher Satisfaction</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">76<span>%</span></div>
+            <div class="stat-label">Grade Improvement</div>
           </div>
         </div>
       </div>
     </div>
-    </div>
+  </div>
+</div>
 
-    <div class="research">
-      <div class="row">
-        <div class="col-md-4">
-          <img src="{% static 'images/mastery-based-education.PNG' %}" alt="">
-        </div>
-        <div class="col-md-8">
-          <div class="digital-content">
-            <h2>Digital Learning</h2>
-            <br>
-            <p>We surveyed over 16,000 teachers and administrators to better understand the state of digital learning. Class Manager provides all facilities that is needed for improvising digital learning.</p>
-          </div>
-        </div>
+<!-- Social Media Section -->
+<div class="section social-section">
+  <div class="container">
+    <div class="social-content">
+      <h2>Are you ready to advance what's possible in education?</h2>
+      <h3>Connect with us on social media</h3>
+      
+      <div class="social-links">
+        <a class="social-icon" href="#"><i class="fab fa-facebook-f"></i></a>
+        <a class="social-icon" href="#"><i class="fab fa-twitter"></i></a>
+        <a class="social-icon" href="#"><i class="fab fa-instagram"></i></a>
+        <a class="social-icon" href="#"><i class="fab fa-google"></i></a>
+        <a class="social-icon" href="#"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="social">
-      <h1>Are you ready to advance what's possible in education.</h1>
-      <h3>Then connect with us on social media.</h3>
-      <a class="social-icon" href="#"><i class="fab fa-facebook-f"></i></a>
-      <a class="social-icon" href="#"><i class="fab fa-twitter"></i></a>
-      <a class="social-icon" href="#"><i class="fab fa-instagram"></i></a>
-      <a class="social-icon" href="#"><i class="fab fa-google"></i></a>
-      <a class="social-icon" href="#"><i class="fab fa-linkedin-in"></i></a>
-    </div>
+<style>
+  /* Enhanced styling for the index page */
+  
+  /* Alert styling */
+  .floating-alerts {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1050;
+    width: 350px;
+    max-width: 90%;
+  }
+  
+  .custom-alert {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .alert-primary {
+    border-left-color: var(--primary-color);
+  }
+  
+  .alert-success {
+    border-left-color: var(--success-color);
+  }
+  
+  .alert-danger {
+    border-left-color: var(--danger-color);
+  }
+  
+  .alert-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+    margin-left: 10px;
+  }
+  
+  .alert-close:hover {
+    color: #333;
+  }
+  
+  /* Hero Banner */
+  .hero-banner {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+  }
+  
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(58, 86, 212, 0.8));
+    z-index: 1;
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(0.5px);
+  }
+  
+  .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+    width: 80%;
+    max-width: 800px;
+  }
+  
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: fadeInDown 0.8s ease;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    animation: fadeInUp 0.8s ease 0.3s both;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    animation: fadeIn 0.8s ease 0.6s both;
+  }
+  
+  .hero-button {
+    display: inline-flex;
+    align-items: center;
+    height: 50px;
+    padding: 0 2rem;
+    border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-decoration: none;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.8s ease 0.6s both;
+  }
+  
+  .hero-button i {
+    margin-right: 8px;
+  }
+  
+  .hero-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    color: white;
+  }
+  
+  .hero-button.primary {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+  }
+  
+  .hero-button.primary:hover {
+    background-color: white;
+    color: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Section Styling */
+  .section {
+    padding: 4rem 0;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+  
+  .section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+    margin: 0 auto;
+    border-radius: 2px;
+  }
+  
+  .left-aligned {
+    text-align: left;
+  }
+  
+  .left-aligned .section-underline {
+    margin: 0.5rem 0;
+  }
+  
+  /* About Section */
+  .about-section {
+    background-color: var(--bg-accent);
+  }
+  
+  .about-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s;
+  }
+  
+  .about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+  }
+  
+  .about-card p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+  }
+  
+  /* Services Section */
+  .services-section {
+    background-color: var(--bg-color);
+  }
+  
+  .service-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .service-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--box-shadow-lg);
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+  }
+  
+  .teacher-icon {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+  }
+  
+  .student-icon {
+    background-color: rgba(76, 201, 240, 0.1);
+    color: var(--accent-color);
+  }
+  
+  .card-header h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color);
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  
+  .service-card:hover .card-image img {
+    transform: scale(1.05);
+  }
+  
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  .feature-list {
+    padding-left: 0;
+    list-style-type: none;
+  }
+  
+  .feature-list li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    color: var(--text-color);
+    line-height: 1.5;
+  }
+  
+  .feature-list li i {
+    color: var(--success-color);
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+  }
+  
+  /* Research Section */
+  .research-section {
+    background-color: var(--bg-accent);
+  }
+  
+  .research-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+  }
+  
+  .research-image {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .research-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .research-content {
+    padding: 2rem;
+  }
+  
+  .research-content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+  }
+  
+  .research-stats {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .stat-item {
+    text-align: center;
+    flex: 1;
+    min-width: 100px;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+  }
+  
+  .stat-number span {
+    font-size: 1.2rem;
+    margin-left: 2px;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  
+  /* Social Section */
+  .social-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    text-align: center;
+  }
+  
+  .social-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .social-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .social-content h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .social-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+  }
+  
+  .social-icon:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 30px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -30px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 992px) {
+    .research-card {
+      grid-template-columns: 1fr;
+    }
+    
+    .research-image {
+      height: 300px;
+    }
+    
+    .hero-title {
+      font-size: 3rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hero-banner {
+      height: 400px;
+    }
+    
+    .hero-title {
+      font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.2rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2rem;
+    }
+    
+    .service-cards {
+      grid-template-columns: 1fr;
+    }
+    
+    .research-stats {
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .social-content h2 {
+      font-size: 2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hero-banner {
+      height: 350px;
+    }
+    
+    .hero-title {
+      font-size: 2rem;
+    }
+    
+    .hero-buttons {
+      flex-direction: column;
+    }
+    
+    .section {
+      padding: 3rem 0;
+    }
+  }
+</style>
+
+<script>
+  // Animation and interactive elements
+  document.addEventListener('DOMContentLoaded', function() {
+    // Auto close alerts after 5 seconds
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.custom-alert');
+      alerts.forEach(alert => {
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 500);
+      });
+    }, 5000);
+    
+    // Make alert dismissible
+    document.querySelectorAll('.alert-close').forEach(button => {
+      button.addEventListener('click', function() {
+        const alert = this.parentElement;
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 300);
+      });
+    });
+  });
+</script>
 
 {% endblock %}

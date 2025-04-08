@@ -2,82 +2,496 @@
 {% load static %}
 {% block content %}
 
-<div class="student-list">
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-user-graduate page-icon"></i>
+    Student Directory
+  </h1>
+  <p class="page-subtitle">Browse and add students to your class</p>
+</div>
+
 <div class="container">
   {% if messages %}
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <div class="floating-alerts">
     {% for message in messages %}
-      <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+      <div class="custom-alert {% if message.tags %} alert-{{ message.tags }}{% endif %} fade-in">
+        <div class="alert-content">{{ message|safe }}</div>
+        <button type="button" class="alert-close" data-dismiss="alert">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
     {% endfor %}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
   </div>
   {% endif %}
-  <form method='GET' action="{% url 'classroom:students_list' %}" class="searchme">
-    <p>Search Student: <input type='search' name='q' placeholder='Search'></p>
-  </form>
-  <div class="row">
-  {% for student in students_list %}
-  <div class="col-6 col-md-4">
-  <div class="student-box">
-    <div class="imgBx">
-      {% if student.student_profile_pic %}
-      <img src="{{ student.student_profile_pic.url }}" alt="">
-      {% else %}
-      {% if forloop.counter0|divisibleby:"2" %}
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
-      {% else %}
-      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="">
-      {% endif %}
-      {% endif %}
-    </div>
-    <div class="content">
-      <h3>{{ student.name }}</h3>
-      <p><i class="far fa-user"></i> Username: {{ student.user.username }}</p>
-      <p><i class="fal fa-user-tag"></i> Roll No.: {{ student.roll_no }}</p>
-      <p><i class="far fa-phone"></i> Phone: {{ student.phone }}</p>
-      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ student.email }}</p>
-      <a href="{% url 'classroom:add_student' pk=student.pk %}"><p class="add-button">ADD</p> </a>
-    </div>
-  </div>
-  </div>
-  {% endfor %}
-  </div>
-</div>
-</div>
-
-
-
-
-<!--
-
-  <div class="jumbotron">
-
-    <h1>Given below is the list of all students.</h1>
-    <h3>Select all the students you want to add in your class.</h3>
-    <form method='GET' action="{% url 'classroom:students_list' %}">
-      <input type='search' name='q' placeholder='Search'>
+  
+  <div class="search-container">
+    <form method='GET' action="{% url 'classroom:students_list' %}" class="search-form">
+      <div class="search-input-group">
+        <i class="fas fa-search search-icon"></i>
+        <input type='search' name='q' placeholder='Search for students...' class="search-input">
+        <button type="submit" class="search-button">Search</button>
+      </div>
     </form>
-
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Roll No.</th>
-          <th scope="col">Name</th>
-          <th scope="col"> </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in students_list %}
-        <tr>
-          <th>{{ student.roll_no }}</th>
-          <th>{{ student.name }}</th>
-          <th> <a class="btn btn-primary" href="{% url 'classroom:add_student' pk=student.pk %}">ADD</a> </th>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
   </div>
--->
+  
+  {% if students_list %}
+  <div class="row students-grid">
+    {% for student in students_list %}
+    <div class="col-md-4 col-sm-6 student-card-wrapper">
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="student-avatar">
+            {% if student.student_profile_pic %}
+              <img src="{{ student.student_profile_pic.url }}" alt="{{ student.name }}">
+            {% else %}
+              {% if forloop.counter0|divisibleby:"2" %}
+                <img src="{% static 'images/login-avatar.PNG' %}" alt="Default Avatar 1">
+              {% else %}
+                <img src="{% static 'images/login-avatar-2.PNG' %}" alt="Default Avatar 2">
+              {% endif %}
+            {% endif %}
+          </div>
+          <h3 class="student-name">{{ student.name }}</h3>
+          <span class="student-roll">Roll No: {{ student.roll_no }}</span>
+        </div>
+        
+        <div class="student-card-body">
+          <div class="student-info">
+            <div class="info-item">
+              <i class="far fa-user info-icon"></i>
+              <div class="info-text">
+                <span class="info-label">Username</span>
+                <span class="info-value">{{ student.user.username }}</span>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <i class="far fa-phone info-icon"></i>
+              <div class="info-text">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{ student.phone }}</span>
+              </div>
+            </div>
+            
+            <div class="info-item">
+              <i class="far fa-envelope info-icon"></i>
+              <div class="info-text">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ student.email }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="student-card-footer">
+          <a href="{% url 'classroom:add_student' pk=student.pk %}" class="add-student-btn">
+            <i class="fas fa-plus-circle"></i> Add to Class
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-users"></i>
+    </div>
+    <h3>No Students Found</h3>
+    <p>Try adjusting your search criteria or check back later for new students.</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  /* Alert styling */
+  .floating-alerts {
+    margin-bottom: 1.5rem;
+  }
+  
+  .custom-alert {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .alert-primary {
+    border-left-color: var(--primary-color);
+  }
+  
+  .alert-success {
+    border-left-color: var(--success-color);
+  }
+  
+  .alert-danger {
+    border-left-color: var(--danger-color);
+  }
+  
+  .alert-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+    margin-left: 10px;
+  }
+  
+  .alert-close:hover {
+    color: #333;
+  }
+
+  /* Search form styling */
+  .search-container {
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .search-form {
+    width: 100%;
+  }
+  
+  .search-input-group {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    padding: 0 0.5rem;
+    transition: box-shadow 0.3s;
+  }
+  
+  .search-input-group:focus-within {
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3), var(--box-shadow);
+  }
+  
+  .search-icon {
+    color: var(--text-muted);
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .search-input {
+    flex-grow: 1;
+    border: none;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+  }
+  
+  .search-button {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+    border: none;
+    color: white;
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .search-button:hover {
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  /* Students grid styling */
+  .students-grid {
+    margin: 0 -15px;
+  }
+  
+  .student-card-wrapper {
+    padding: 15px;
+    transition: transform 0.4s ease;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Student card styling */
+  .student-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+  }
+  
+  .student-card-header {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(76, 201, 240, 0.05));
+  }
+  
+  .student-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 1rem;
+    border: 3px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .student-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .student-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.25rem;
+  }
+  
+  .student-roll {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background-color: rgba(67, 97, 238, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    display: inline-block;
+  }
+  
+  .student-card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+  }
+  
+  .student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .info-icon {
+    color: var(--primary-color);
+    margin-right: 1rem;
+    font-size: 1.1rem;
+    min-width: 1.1rem;
+    margin-top: 0.2rem;
+  }
+  
+  .info-text {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+  
+  .info-value {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    word-break: break-word;
+  }
+  
+  .student-card-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+  }
+  
+  .add-student-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  
+  .add-student-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .add-student-btn i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 992px) {
+    .student-card-wrapper {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .search-input-group {
+      flex-direction: column;
+      padding: 0;
+    }
+    
+    .search-icon {
+      display: none;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .search-button {
+      width: 100%;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      padding: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .student-card-wrapper {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Animation and interactive elements
+  document.addEventListener('DOMContentLoaded', function() {
+    // Auto close alerts after 5 seconds
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.custom-alert');
+      alerts.forEach(alert => {
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 500);
+      });
+    }, 5000);
+    
+    // Make alert dismissible
+    document.querySelectorAll('.alert-close').forEach(button => {
+      button.addEventListener('click', function() {
+        const alert = this.parentElement;
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 300);
+      });
+    });
+  });
+</script>
+
 {% endblock %}

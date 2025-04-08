@@ -2,40 +2,528 @@
 {% load static %}
 {% block content %}
 
-
-
-<div class="login-page">
-  <img src="{% static 'images/login-background.PNG' %}" alt="">
-  <div class="login-form">
-    <div class="avatar">
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
+<div class="login-container">
+  <div class="login-backdrop"></div>
+  
+  <div class="login-card">
+    <div class="login-header">
+      <div class="avatar-container">
+        <img src="{% static 'images/login-avatar.PNG' %}" alt="User Avatar" class="login-avatar">
+      </div>
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Sign in to continue</p>
     </div>
+    
     {% if messages %}
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <div class="message-container">
       {% for message in messages %}
-        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+        <div class="message-alert {{ message.tags }}">
+          <div class="message-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="message-content">
+            {{ message|safe }}
+          </div>
+          <button type="button" class="message-close" onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
       {% endfor %}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
     </div>
     {% endif %}
-    <h1>Login</h1>
-    <form action="{% url 'classroom:login' %}" method="post">
+    
+    <form action="{% url 'classroom:login' %}" method="post" class="login-form">
       {% csrf_token %}
-      <p>Username:</p>
-      <input type="text" name="username" placeholder="Enter your username">
-      <br>
-      <br>
-      <p>Password:</p>
-      <input type="password" name="password" placeholder="Enter password">
-      <br>
-      <br>
-      <input class="btn btn-primary" type="submit" name="" value="Login">
+      
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-with-icon">
+          <i class="fas fa-user input-icon"></i>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            placeholder="Enter your username" 
+            required
+          >
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon password-container">
+          <i class="fas fa-lock input-icon"></i>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter your password" 
+            required
+          >
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button type="submit" class="login-button">
+        <span>Login</span>
+        <i class="fas fa-arrow-right btn-icon"></i>
+      </button>
     </form>
-    <a href="{% url 'classroom:signup' %}">Don't have an account.</a>
+    
+    <div class="login-footer">
+      <p>Don't have an account? <a href="{% url 'classroom:signup' %}" class="signup-link">Sign up</a></p>
+    </div>
   </div>
 </div>
 
+<style>
+  /* Modern color scheme variables */
+  :root {
+    --primary: #5066e1;
+    --primary-dark: #4056c5;
+    --primary-light: rgba(80, 102, 225, 0.15);
+    --text-dark: #1a202c;
+    --text-medium: #4a5568;
+    --text-light: #718096;
+    --bg-light: #ffffff;
+    --bg-subtle: #f8f9fb;
+    --border-color: #e2e8f0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --success: #38c172;
+    --error: #e53e3e;
+    --warning: #f6ad55;
+  }
+  
+  .login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 60px);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f4f8;
+  }
+  
+  .login-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #5066e1, #8a85ff);
+    z-index: -1;
+    opacity: 0.8;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 450px;
+    background-color: var(--bg-light);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease, slideUp 0.8s ease;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .login-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    text-align: center;
+    position: relative;
+    background-color: var(--bg-light);
+  }
+  
+  .login-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background-color: var(--border-color);
+  }
+  
+  .avatar-container {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    border: 5px solid white;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: white;
+  }
+  
+  .avatar-container:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(80, 102, 225, 0.25);
+  }
+  
+  .login-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .login-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    margin-bottom: 0;
+  }
+  
+  /* Messages styling */
+  .message-container {
+    padding: 0 2.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .message-alert {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background-color: rgba(80, 102, 225, 0.1);
+    border-left: 4px solid var(--primary);
+    margin-bottom: 0.75rem;
+    animation: slideDown 0.3s ease;
+  }
+  
+  .message-alert.error {
+    background-color: rgba(229, 62, 62, 0.1);
+    border-left-color: var(--error);
+  }
+  
+  .message-alert.success {
+    background-color: rgba(56, 193, 114, 0.1);
+    border-left-color: var(--success);
+  }
+  
+  .message-icon {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-right: 0.75rem;
+  }
+  
+  .message-alert.error .message-icon {
+    color: var(--error);
+  }
+  
+  .message-alert.success .message-icon {
+    color: var(--success);
+  }
+  
+  .message-content {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+  
+  .message-close {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 0.25rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .message-close:hover {
+    color: var(--text-dark);
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Login form */
+  .login-form {
+    margin-top: 40px;
+    height: 386px;
+    border-radius: 12px;
+    width: 400px;
+    margin-left: 27px;
+    margin-bottom: 19px;
+    background: #4a60e1;
+    padding: 2rem 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .form-group {
+    margin-bottom: 1.75rem;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-medium);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .input-with-icon {
+    position: relative;
+    width: 100%;
+    display: block;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    z-index: 2;
+  }
+  
+  .input-with-icon input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-light);
+    font-size: 1rem;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+    display: block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  
+  .input-with-icon input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
+  }
+  
+  .input-with-icon input:focus + .input-icon {
+    color: var(--primary-dark);
+  }
+  
+  .input-with-icon input::placeholder {
+    color: #c0c7d6;
+  }
+  
+  /* Password input & toggle */
+  .password-container {
+    position: relative;
+    display: block;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.2s;
+    border-radius: 50%;
+    z-index: 10;
+  }
+  
+  .password-toggle:hover {
+    color: var(--primary);
+    background-color: var(--primary-light);
+  }
+  
+  .password-toggle:focus {
+    outline: none;
+  }
+  
+  /* Login button */
+  .login-button {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(80, 102, 225, 0.3);
+    margin-top: 2rem;
+    position: relative;
+  }
+  
+  .login-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(80, 102, 225, 0.4);
+  }
+  
+  .btn-icon {
+    margin-left: 0.75rem;
+    transition: all 0.3s;
+    opacity: 0.8;
+  }
+  
+  .login-button:hover .btn-icon {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+  
+  /* Login footer */
+  .login-footer {
+    padding: 1.75rem 2.5rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-subtle);
+  }
+  
+  .login-footer p {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  
+  .signup-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s;
+  }
+  
+  .signup-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--primary);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+  }
+  
+  .signup-link:hover {
+    color: var(--primary-dark);
+  }
+  
+  .signup-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(30px); }
+    to { transform: translateY(0); }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .login-container {
+      padding: 1.5rem 1rem;
+    }
+    
+    .login-header {
+      padding: 2rem 2rem 1.25rem;
+    }
+    
+    .login-form {
+      padding: 1.5rem 2rem 2rem;
+    }
+    
+    .login-footer {
+      padding: 1.5rem 2rem;
+    }
+    
+    .avatar-container {
+      width: 90px;
+      height: 90px;
+    }
+    
+    .login-title {
+      font-size: 1.8rem;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .login-header {
+      padding: 1.75rem 1.5rem 1rem;
+    }
+    
+    .login-form {
+      padding: 1.5rem 1.5rem;
+    }
+    
+    .message-container,
+    .login-footer {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    
+    .avatar-container {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  // Password visibility toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.querySelector('.password-toggle');
+    const passwordInput = document.querySelector('#password');
+    
+    if (toggleButton && passwordInput) {
+      toggleButton.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Change the icon
+        const icon = toggleButton.querySelector('i');
+        if (type === 'password') {
+          icon.className = 'far fa-eye';
+        } else {
+          icon.className = 'far fa-eye-slash';
+        }
+      });
+    }
+  });
+</script>
 
 {% endblock %}

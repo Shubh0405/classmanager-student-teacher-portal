@@ -2,46 +2,471 @@
 {% load static %}
 {% block content %}
 
-<div class="profile">
-  <img src="{% static 'images/profile-background-3.PNG' %}" alt="">
-  <div class="profile-box">
-    {% if student.student_profile_pic %}
-      <img src="{{ student.student_profile_pic.url }}">
-    {% else %}
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
-    {% endif %}
-    <div class="profile-details">
-      <h1>{{ student.name }}</h1>
-      <br>
-      <p><i class="far fa-user"></i> Username: {{ student.user.username }}</p>
-      <p><i class="fal fa-user-tag"></i> Roll No.: {{ student.roll_no }}</p>
-      <p><i class="far fa-phone"></i> Phone: {{ student.phone }}</p>
-      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ student.email }}</p>
-      <a href="{% url 'classroom:student_update' pk=user.pk %}"> <p class="edit-button">Edit Profile</p> </a>
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="cover-image" style="background-image: url('{% static 'images/profile-background-3.PNG' %}')">
+      <div class="profile-avatar">
+        {% if student.student_profile_pic %}
+          <img src="{{ student.student_profile_pic.url }}" alt="{{ student.name }}">
+        {% else %}
+          <img src="{% static 'images/login-avatar.PNG' %}" alt="Default Avatar">
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="profile-headline">
+      <h1 class="profile-name">{{ student.name }}</h1>
+      <span class="profile-role">Student</span>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-card info-card">
+      <div class="card-header">
+        <h2>Personal Information</h2>
+        <a href="{% url 'classroom:student_update' pk=user.pk %}" class="edit-profile-button">
+          <i class="fas fa-user-edit"></i>
+          <span>Edit Profile</span>
+        </a>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">
+            <i class="far fa-user info-icon"></i>
+            <span>Username</span>
+          </div>
+          <div class="info-value">{{ student.user.username }}</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">
+            <i class="fas fa-user-tag info-icon"></i>
+            <span>Roll Number</span>
+          </div>
+          <div class="info-value">{{ student.roll_no }}</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">
+            <i class="fas fa-phone info-icon"></i>
+            <span>Phone</span>
+          </div>
+          <div class="info-value">{{ student.phone }}</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-label">
+            <i class="fas fa-envelope info-icon"></i>
+            <span>Email</span>
+          </div>
+          <div class="info-value">{{ student.email }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="profile-card stats-card">
+      <div class="card-header">
+        <h2>Academic Overview</h2>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value">{{ student.marks.count }}</div>
+          <div class="stat-label">Total Assessments</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-value">{{ student.student_assignment.count }}</div>
+          <div class="stat-label">Assignments</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-value">{{ student.class_notice.count }}</div>
+          <div class="stat-label">Notices</div>
+        </div>
+      </div>
+      
+      <div class="scroll-indicator">
+        <div class="scroll-dot active"></div>
+        <div class="scroll-dot"></div>
+        <div class="scroll-dot"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!--
-<div class="row">
-  <div class="col-md-3">
-    {% if student.student_profile_pic %}
-      <img src="{{ student.student_profile_pic.url }}">
-    {% else %}
-      <img src="" alt="">
-    {% endif %}
-  </div>
-  <div class="col-md-9">
-    <h1>{{ student.user.username }}</h1>
-    <br>
-    <p>Name: {{ student.name }}</p>
-    <p>Roll No.: {{ student.roll_no }}</p>
-    <p>Email Id: {{ student.email }}</p>
-    <p>Phone: {{ student.phone }}</p>
-    <br>
-    <p> <a class="btn btn-primary" href="{% url 'classroom:student_update' pk=user.pk %}">Edit profile</a> </p>
-  </div>
-</div>
--->
+<style>
+  /* Profile container */
+  .profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Profile header section */
+  .profile-header {
+    position: relative;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .cover-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .profile-avatar {
+    position: absolute;
+    bottom: -50px;
+    left: 50px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
+  }
+  
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-headline {
+    padding: 60px 50px 30px;
+    background-color: #fff;
+  }
+  
+  .profile-name {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+  }
+  
+  .profile-role {
+    font-size: 1.1rem;
+    color: #4299e1;
+    font-weight: 500;
+  }
+  
+  /* Profile content section */
+  .profile-content {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+  }
+  
+  /* Profile cards */
+  .profile-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f7fafc;
+  }
+  
+  .card-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .edit-profile-button {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    background-color: #4299e1;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .edit-profile-button:hover {
+    background-color: #3182ce;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .edit-profile-button i {
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Info grid */
+  .info-grid {
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 1rem;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-label {
+    display: flex;
+    align-items: center;
+    color: #718096;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-icon {
+    margin-right: 0.5rem;
+    color: #4299e1;
+  }
+  
+  .info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3748;
+    word-break: break-word;
+  }
+  
+  /* Stats card */
+  .stats-card {
+    height: 100%;
+  }
+  
+  .stats-grid {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #a0aec0 #e2e8f0;
+    gap: 1rem;
+    position: relative;
+    padding-bottom: 1.75rem; /* Extra padding for scrollbar */
+  }
+  
+  .stats-grid::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .stats-grid::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+  
+  .stats-grid::-webkit-scrollbar-thumb {
+    background-color: #a0aec0;
+    border-radius: 10px;
+  }
+  
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    flex: 0 0 auto;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+  }
+  
+  .stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background-color: #ebf8ff;
+    border-color: #bee3f8;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4299e1;
+  }
+  
+  .stat-label {
+    font-size: 0.85rem;
+    color: #718096;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+  
+  /* Add scroll indicators */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.25rem;
+  }
+  
+  .scroll-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #cbd5e0;
+    transition: all 0.2s ease;
+  }
+  
+  .scroll-dot.active {
+    background-color: #4299e1;
+    width: 18px;
+    border-radius: 3px;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .profile-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .profile-avatar {
+      left: 30px;
+      width: 100px;
+      height: 100px;
+      bottom: -40px;
+    }
+    
+    .profile-headline {
+      padding: 50px 30px 25px;
+    }
+    
+    .profile-name {
+      font-size: 1.75rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .profile-avatar {
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -50px;
+    }
+    
+    .profile-headline {
+      padding-top: 60px;
+      text-align: center;
+    }
+    
+    .card-header {
+      flex-direction: column;
+      gap: 0.75rem;
+      text-align: center;
+      padding-bottom: 1rem;
+    }
+    
+    .edit-profile-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add more stat boxes for demonstration
+    const statsGrid = document.querySelector('.stats-grid');
+    const statTypes = [
+      { label: 'Average Grade', value: '85%' },
+      { label: 'Completed Tasks', value: '24' },
+      { label: 'Study Hours', value: '38' },
+      { label: 'Active Days', value: '28' }
+    ];
+    
+    // Add example stat boxes
+    statTypes.forEach(stat => {
+      const statBox = document.createElement('div');
+      statBox.className = 'stat-box';
+      
+      const statValue = document.createElement('div');
+      statValue.className = 'stat-value';
+      statValue.textContent = stat.value;
+      
+      const statLabel = document.createElement('div');
+      statLabel.className = 'stat-label';
+      statLabel.textContent = stat.label;
+      
+      statBox.appendChild(statValue);
+      statBox.appendChild(statLabel);
+      statsGrid.appendChild(statBox);
+    });
+    
+    // Scroll indicator functionality
+    const scrollDots = document.querySelectorAll('.scroll-dot');
+    const updateScrollIndicator = () => {
+      const scrollPosition = statsGrid.scrollLeft;
+      const maxScroll = statsGrid.scrollWidth - statsGrid.clientWidth;
+      
+      if (maxScroll > 0) {
+        const scrollPercentage = scrollPosition / maxScroll;
+        const dotIndex = Math.min(
+          Math.floor(scrollPercentage * scrollDots.length),
+          scrollDots.length - 1
+        );
+        
+        scrollDots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === dotIndex);
+        });
+      }
+    };
+    
+    statsGrid.addEventListener('scroll', updateScrollIndicator);
+    
+    // Handle horizontal scrolling with mouse wheel
+    statsGrid.addEventListener('wheel', function(e) {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        this.scrollLeft += e.deltaY;
+        updateScrollIndicator();
+      }
+    });
+    
+    // Make stat boxes clickable to show details (example)
+    document.querySelectorAll('.stat-box').forEach(box => {
+      box.addEventListener('click', function() {
+        const label = this.querySelector('.stat-label').textContent;
+        console.log(`${label} details would open here`);
+      });
+    });
+  });
+</script>
 
 {% endblock %}

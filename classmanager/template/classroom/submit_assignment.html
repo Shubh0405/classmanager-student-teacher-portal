@@ -1,14 +1,295 @@
 {% extends 'classroom/base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-upload page-icon"></i>
+    Submit Assignment
+  </h1>
+  <p class="page-subtitle">Upload your completed work for review</p>
+</div>
+
 <div class="container">
-<div class="jumbotron">
-  <h1>Submit Assignment</h1>
-  <form enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" class="btn btn-primary" name="" value="Submit">
-  </form>
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-header-icon">
+        <i class="fas fa-file-upload"></i>
+      </div>
+      <div class="form-header-text">
+        <h2>Assignment Submission</h2>
+        <p>Please upload your completed assignment file below</p>
+      </div>
+    </div>
+    
+    <div class="form-body">
+      <form enctype="multipart/form-data" method="post" class="submission-form" id="assignmentForm">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="form-actions">
+          <a href="{% url 'classroom:class_assignment' %}" class="btn-cancel">
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </a>
+          <input type="submit" class="btn-submit" value="Submit Assignment">
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Form card styling */
+  .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+    margin-bottom: 2rem;
+  }
+  
+  /* Form header */
+  .form-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .form-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .form-header-text h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-header-text p {
+    margin: 0;
+    color: #718096;
+    font-size: 0.95rem;
+  }
+  
+  /* Form body */
+  .form-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  /* Bootstrap form styling overrides */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+  }
+  
+  .form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 1rem;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    background-color: #f7fafc;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background-color: #fff;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
+  }
+  
+  .custom-file {
+    height: auto;
+  }
+  
+  .custom-file-label {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    height: auto;
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+  }
+  
+  .custom-file-label::after {
+    height: auto;
+    padding: 0.75rem 1rem;
+    background-color: #4299e1;
+    color: white;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .form-text {
+    color: #718096;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+  }
+  
+  .btn-cancel {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-cancel i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #cbd5e0;
+    color: #2d3748;
+    text-decoration: none;
+  }
+  
+  .btn-submit {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #4299e1;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .btn-submit::before {
+    content: "\f1d8";  /* Font Awesome paper plane icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 0.5rem;
+  }
+  
+  .btn-submit:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+  }
+  
+  /* Hide default bootstrap submit button */
+  .btn-primary:not(.btn-submit) {
+    display: none !important;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column-reverse;
+      gap: 1rem;
+    }
+    
+    .btn-cancel, .btn-submit {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .form-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .form-header-icon {
+      margin-right: 0;
+      margin-bottom: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Hide any bootstrap default submit buttons
+    const defaultSubmitButtons = document.querySelectorAll('.btn.btn-primary:not(.btn-submit)');
+    defaultSubmitButtons.forEach(button => {
+      button.style.display = 'none';
+    });
+  });
+</script>
+
 {% endblock %}

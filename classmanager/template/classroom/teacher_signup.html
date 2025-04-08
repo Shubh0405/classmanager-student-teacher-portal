@@ -2,42 +2,539 @@
 {% load static %}
 {% block content %}
 
-
-<div class="login-page">
-  <img src="{% static 'images/login-background.PNG' %}" alt="">
-  <div class="student-signup-form">
+<div class="signup-container">
+  <div class="signup-content">
     {% if registered %}
-    <h1>Thank you for registering.</h1>
+      <div class="success-card">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="success-title">Registration Successful!</h2>
+        <p class="success-description">Thank you for registering. Your teacher account has been created.</p>
+        <a href="{% url 'classroom:login' %}" class="login-button">
+          <i class="fas fa-sign-in-alt"></i>
+          Proceed to Login
+        </a>
+      </div>
     {% else %}
-    <h1>Sign Up as a teacher.</h1>
-    
-
-    <form method="post">
-      {% csrf_token %}
-
-      {{ teacher_profile_form.non_field_errors }}
-
-      <p><label >{{ teacher_profile_form.name.label_tag }}</label>{{ teacher_profile_form.name }}</p>
-      <p> <label for="">{{ teacher_profile_form.subject_name.label_tag }}</label>  {{ teacher_profile_form.subject_name }}</p>
-      <p> <label for="">{{ teacher_profile_form.phone.label_tag }}</label> {{ teacher_profile_form.phone }}</p>
-      <p> <label for="">{{ teacher_profile_form.email.label_tag }}</label>{{ teacher_profile_form.email }}</p>
-
-
-      {{ user_form.non_field_errors }}
-
-      <p> <label for="">{{ user_form.username.label_tag }}</label>{{ user_form.username }}</p>
-      <p> {{ user_form.username.help_text }}</p>
-      <p> <label for="">{{ user_form.password1.label_tag }}</label>{{ user_form.password1 }}</p>
-      <p> {{ user_form.password1.help_text }} </p>
-      <p> <label for="">{{ user_form.password2.label_tag }}</label>{{ user_form.password2 }}</p>
-      <p> {{ user_form.password2.help_text }} </p>
-      <input type="submit" name="" value="Sign Up">
-    </form>
-    <a href="{% url 'classroom:login' %}">Already have an account.</a>
+      <div class="form-card">
+        <div class="form-header">
+          <div class="form-header-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <div class="form-header-text">
+            <h2>Teacher Registration</h2>
+            <p>Join ClassManager as an educator</p>
+          </div>
+        </div>
+        
+        <div class="form-body">
+          <form method="post" class="signup-form">
+            {% csrf_token %}
+            
+            {% if teacher_profile_form.non_field_errors %}
+              <div class="form-errors">
+                {{ teacher_profile_form.non_field_errors }}
+              </div>
+            {% endif %}
+            
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-id-card"></i>
+                Professional Information
+              </h3>
+              
+              <div class="form-group">
+                <label for="{{ teacher_profile_form.name.id_for_label }}">
+                  <i class="fas fa-user"></i>
+                  Full Name
+                </label>
+                {{ teacher_profile_form.name }}
+              </div>
+              
+              <div class="form-group">
+                <label for="{{ teacher_profile_form.subject_name.id_for_label }}">
+                  <i class="fas fa-book"></i>
+                  Subject Specialization
+                </label>
+                {{ teacher_profile_form.subject_name }}
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="{{ teacher_profile_form.phone.id_for_label }}">
+                    <i class="fas fa-phone"></i>
+                    Phone Number
+                  </label>
+                  {{ teacher_profile_form.phone }}
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ teacher_profile_form.email.id_for_label }}">
+                    <i class="fas fa-envelope"></i>
+                    Email Address
+                  </label>
+                  {{ teacher_profile_form.email }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-section">
+              <h3 class="section-title">
+                <i class="fas fa-lock"></i>
+                Account Security
+              </h3>
+              
+              {% if user_form.non_field_errors %}
+                <div class="form-errors">
+                  {{ user_form.non_field_errors }}
+                </div>
+              {% endif %}
+              
+              <div class="form-group">
+                <label for="{{ user_form.username.id_for_label }}">
+                  <i class="fas fa-user-circle"></i>
+                  Username
+                </label>
+                {{ user_form.username }}
+                <small class="help-text">{{ user_form.username.help_text }}</small>
+              </div>
+              
+              <div class="form-group password-group">
+                <label for="{{ user_form.password1.id_for_label }}">
+                  <i class="fas fa-key"></i>
+                  Password
+                </label>
+                <div class="password-input-wrapper">
+                  {{ user_form.password1 }}
+                  <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <small class="help-text">{{ user_form.password1.help_text }}</small>
+              </div>
+              
+              <div class="form-group password-group">
+                <label for="{{ user_form.password2.id_for_label }}">
+                  <i class="fas fa-lock"></i>
+                  Confirm Password
+                </label>
+                <div class="password-input-wrapper">
+                  {{ user_form.password2 }}
+                  <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <small class="help-text">{{ user_form.password2.help_text }}</small>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="submit" class="btn-signup">
+                <i class="fas fa-user-plus"></i>
+                Create Teacher Account
+              </button>
+            </div>
+            
+            <div class="form-footer">
+              <p>Already have an account? <a href="{% url 'classroom:login' %}">Log In</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
     {% endif %}
   </div>
 </div>
 
+<style>
+  /* Container */
+  .signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px);
+    padding: 2rem 1rem;
+    background-image: url('{% static "images/login-background.PNG" %}');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .signup-container:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  .signup-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 700px;
+  }
+  
+  /* Form Card */
+  .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Form Header */
+  .form-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .form-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: rgba(237, 137, 54, 0.1);
+    color: #ed8936;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .form-header-text h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-header-text p {
+    margin: 0;
+    color: #718096;
+    font-size: 0.95rem;
+  }
+  
+  /* Form Body */
+  .form-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  /* Form Sections */
+  .form-section {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1.5rem;
+  }
+  
+  .form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .section-title i {
+    color: #ed8936;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  /* Form Groups */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  /* Form Labels */
+  .form-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-group label i {
+    color: #ed8936;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+    min-width: 16px;
+  }
+  
+  /* Form Inputs */
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2d3748;
+    background-color: #f7fafc;
+    transition: all 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #ed8936;
+    box-shadow: 0 0 0 3px rgba(237, 137, 54, 0.15);
+    background-color: #fff;
+  }
+  
+  .help-text {
+    display: block;
+    margin-top: 0.5rem;
+    color: #718096;
+    font-size: 0.85rem;
+  }
+  
+  /* Form Errors */
+  .form-errors {
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: #c53030;
+  }
+  
+  /* Password visibility toggle */
+  .password-group {
+    position: relative;
+  }
+  
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    padding-right: 40px; /* Make space for the eye icon */
+  }
+  
+  .password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    color: #a0aec0;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    height: 30px;
+    width: 30px;
+  }
+  
+  .password-toggle-btn:hover {
+    color: #ed8936;
+  }
+  
+  .password-toggle-btn:focus {
+    outline: none;
+    color: #ed8936;
+  }
+  
+  .password-toggle-btn.show-password i.fa-eye {
+    color: #ed8936;
+  }
+  
+  .password-toggle-btn.show-password i.fa-eye:before {
+    content: "\f070"; /* Font Awesome code for eye-slash */
+  }
+  
+  /* Form Actions */
+  .form-actions {
+    margin-top: 2rem;
+  }
+  
+  .btn-signup {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background-color: #ed8936;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-signup i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-signup:hover {
+    background-color: #dd6b20;
+    transform: translateY(-2px);
+  }
+  
+  /* Form Footer */
+  .form-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .form-footer p {
+    color: #718096;
+    margin: 0;
+  }
+  
+  .form-footer a {
+    color: #ed8936;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .form-footer a:hover {
+    color: #dd6b20;
+    text-decoration: underline;
+  }
+  
+  /* Success Card */
+  .success-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    padding: 3rem 2rem;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .success-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .success-description {
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .login-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #ed8936;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .login-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .login-button:hover {
+    background-color: #dd6b20;
+    text-decoration: none;
+    color: white;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .form-section {
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Setup password toggle buttons
+    const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const input = this.parentNode.querySelector('input');
+        const type = input.getAttribute('type');
+        
+        // Toggle password visibility
+        if (type === 'password') {
+          input.setAttribute('type', 'text');
+          this.classList.add('show-password');
+          this.setAttribute('aria-label', 'Hide password');
+        } else {
+          input.setAttribute('type', 'password');
+          this.classList.remove('show-password');
+          this.setAttribute('aria-label', 'Show password');
+        }
+      });
+    });
+  });
+</script>
 
 {% endblock %}

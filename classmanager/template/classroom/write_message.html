@@ -1,20 +1,420 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-envelope-open-text page-icon"></i>
+    Write Message
+  </h1>
+  <p class="page-subtitle">Send a message to your instructor</p>
+</div>
+
 <div class="container">
-<div class="jumbotron">
   {% if message_sent %}
-    <h2>Message is sent successfully.</h2>
+    <div class="success-card">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h2 class="success-title">Message Sent Successfully</h2>
+      <p class="success-description">Your message has been delivered to {{ teacher.name }}.</p>
+      <a href="{% url 'classroom:teachers_list' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Teachers
+      </a>
+    </div>
   {% else %}
-  <h1 style="text-align: center;">Write a message to {{ teacher.name }}</h1>
-  <h6 style="text-align: center;">After sending message you will not be able to delete or edit message.</h6>
-  <hr>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" class="btn btn-primary" name="" value="Send Message">
-  </form>
+    <div class="message-card">
+      <div class="message-header">
+        <div class="recipient-info">
+          <div class="recipient-avatar">
+            {% if teacher.teacher_profile_pic %}
+              <img src="{{ teacher.teacher_profile_pic.url }}" alt="{{ teacher.name }}">
+            {% else %}
+              <img src="" alt="{{ teacher.name }}" class="default-avatar">
+            {% endif %}
+          </div>
+          <div class="recipient-details">
+            <h3>{{ teacher.name }}</h3>
+            <span>{{ teacher.subject_name }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="message-form-container">
+        <div class="disclaimer">
+          <i class="fas fa-info-circle"></i>
+          <p>After sending, you will not be able to delete or edit this message.</p>
+        </div>
+        
+        <form method="post" class="message-form">
+          {% csrf_token %}
+          
+          {% for field in form %}
+            <div class="form-field">
+              <label for="{{ field.id_for_label }}">
+                <i class="fas {% if field.name == 'subject' %}fa-heading{% else %}fa-comment-alt{% endif %}"></i>
+                {{ field.label }}
+              </label>
+              {{ field }}
+              {% if field.help_text %}
+                <small class="field-help">{{ field.help_text }}</small>
+              {% endif %}
+              {% if field.errors %}
+                <div class="field-errors">
+                  {% for error in field.errors %}
+                    <p class="error-text">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          
+          <div class="form-actions">
+            <a href="{% url 'classroom:teachers_list' %}" class="btn-cancel">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+            <button type="submit" class="btn-send">
+              <i class="fas fa-paper-plane"></i>
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   {% endif %}
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #4299e1;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Success message styling */
+  .success-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .success-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .success-description {
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #4299e1;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .back-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .back-button:hover {
+    background-color: #3182ce;
+    text-decoration: none;
+    color: white;
+  }
+  
+  /* Message card styling */
+  .message-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Message header */
+  .message-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+  }
+  
+  .recipient-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .recipient-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+    background-color: #e2e8f0;
+    flex-shrink: 0;
+  }
+  
+  .recipient-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .default-avatar {
+    background-color: #4299e1;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .recipient-details h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+  }
+  
+  .recipient-details span {
+    font-size: 0.9rem;
+    color: #718096;
+  }
+  
+  /* Message form container */
+  .message-form-container {
+    padding: 1.5rem;
+  }
+  
+  .disclaimer {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background-color: rgba(237, 137, 54, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .disclaimer i {
+    color: #dd6b20;
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  .disclaimer p {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  /* Message form */
+  .message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .form-field label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-field label i {
+    color: #4299e1;
+    margin-right: 0.5rem;
+  }
+  
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 1rem;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    background-color: #f7fafc;
+  }
+  
+  .form-field input:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background-color: #fff;
+  }
+  
+  .form-field textarea {
+    min-height: 180px;
+    resize: vertical;
+  }
+  
+  /* Style for error messages */
+  .field-errors {
+    margin-top: 0.5rem;
+  }
+  
+  .error-text {
+    color: #e53e3e;
+    font-size: 0.85rem;
+    margin: 0.25rem 0;
+  }
+  
+  .field-help {
+    color: #718096;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .btn-cancel {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-cancel i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #cbd5e0;
+    color: #2d3748;
+    text-decoration: none;
+  }
+  
+  .btn-send {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background-color: #4299e1;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .btn-send i {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-send:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column-reverse;
+      gap: 1rem;
+    }
+    
+    .btn-cancel, .btn-send {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
 {% endblock %}

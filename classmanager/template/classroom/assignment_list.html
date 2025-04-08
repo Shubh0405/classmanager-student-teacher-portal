@@ -1,37 +1,257 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-clipboard-list page-icon"></i>
+    Assignments
+  </h1>
+  <p class="page-subtitle">Manage all your classroom assignments</p>
+  
+  <div class="page-actions">
+    <a href="{% url 'classroom:upload_assignment' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add New Assignment
+    </a>
+  </div>
+</div>
 
 <div class="container">
-  <div class="jumbotron">
-{% if teacher.teacher_assignment.count == 0 %}
-  <h2>No Assignments Uploaded Yet</h2>
-{% else %}
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Assignment Name</th>
-        <th scope="col">Uploaded Date</th>
-        <th scope="col">Download</th>
-        <th scope="col">Update</th>
-        <th scope="col">Delete</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for assignment in teacher.teacher_assignment.all %}
-        <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ assignment.assignment_name }}</td>
-          <td>{{ assignment.created_at }}</td>
-          <td><a href="{{ assignment.assignment.url }}" class="btn btn-primary" target="_blank">Download</a></td>
-          <td><a href="{% url 'classroom:update_assignment' id=assignment.id %}" class="btn btn-primary">Update</a></td>
-          <td><a href="{% url 'classroom:assignment_delete' id=assignment.id %}" class="btn btn-danger">Delete</a></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+  <div class="card assignments-card">
+    <div class="card-body">
+      {% if teacher.teacher_assignment.count == 0 %}
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h3>No Assignments Uploaded Yet</h3>
+          <p>Get started by creating your first assignment for your students.</p>
+          <a href="{% url 'classroom:upload_assignment' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create Assignment
+          </a>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th scope="col" width="60">#</th>
+                <th scope="col">Assignment Name</th>
+                <th scope="col" width="180">Uploaded Date</th>
+                <th scope="col" width="110">Download</th>
+                <th scope="col" width="110">Update</th>
+                <th scope="col" width="110">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for assignment in teacher.teacher_assignment.all %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td class="assignment-name">{{ assignment.assignment_name }}</td>
+                  <td>{{ assignment.created_at|date:"M d, Y" }}</td>
+                  <td>
+                    <a href="{{ assignment.assignment.url }}" class="btn btn-sm btn-primary action-btn" target="_blank" title="Download">
+                      <i class="fas fa-download"></i> <span class="btn-text">Download</span>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{% url 'classroom:update_assignment' id=assignment.id %}" class="btn btn-sm btn-info action-btn" title="Update">
+                      <i class="fas fa-edit"></i> <span class="btn-text">Edit</span>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{% url 'classroom:assignment_delete' id=assignment.id %}" class="btn btn-sm btn-danger action-btn" title="Delete">
+                      <i class="fas fa-trash-alt"></i> <span class="btn-text">Delete</span>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+  }
+  
+  .page-actions {
+    margin-top: 0.5rem;
+  }
+
+  /* Card styling */
+  .assignments-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    background-color: var(--card-bg);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Custom table styling */
+  .custom-table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .custom-table thead th {
+    background-color: var(--bg-accent);
+    color: var(--text-color);
+    font-weight: 600;
+    border-top: none;
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 0.75rem;
+    position: relative;
+  }
+  
+  .custom-table tbody tr {
+    transition: all 0.2s;
+  }
+  
+  .custom-table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+  }
+  
+  .custom-table td, .custom-table th {
+    vertical-align: middle;
+    padding: 0.85rem 0.75rem;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .assignment-name {
+    font-weight: 500;
+    color: var(--text-color);
+  }
+  
+  /* Button styling */
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    transition: all 0.3s;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    border: none;
+  }
+  
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .action-btn i {
+    margin-right: 4px;
+  }
+  
+  .btn-primary, .btn-info {
+    color: white;
+  }
+  
+  .btn-sm {
+    font-size: 0.85rem;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .table-responsive {
+      border: none;
+    }
+    
+    .btn-text {
+      display: none;
+    }
+    
+    .action-btn {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    
+    .action-btn i {
+      margin-right: 0;
+    }
+  }
+</style>
+
 {% endblock %}

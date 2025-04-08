@@ -1,81 +1,871 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="light-mode">
   <head>
     <meta charset="utf-8">
-    <title>Student manger</title>
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<!-- Popper JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Manager</title>
+    
+    <!-- Core libraries -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Original CSS files -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/newbase.css' %}">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Source+Sans+Pro&display=swap" rel="stylesheet">
-
+    
     {% load bootstrap4 %}
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
+
+    <!-- Enhanced UI styling with functional navigation -->
+    <style>
+      :root {
+        /* Enhanced color scheme */
+        --primary-color: #4361ee;
+        --primary-light: #4895ef;
+        --primary-dark: #3a56d4;
+        --secondary-color: #3f37c9;
+        --accent-color: #4cc9f0;
+        --success-color: #34c759;
+        --warning-color: #ff9f0a;
+        --danger-color: #ff3b30;
+        --info-color: #64d2ff;
+        
+        /* Light theme colors */
+        --bg-color: #f5f7fa;
+        --bg-accent: #eef2f7;
+        --text-color: #2c3e50;
+        --text-muted: #7a8c9e;
+        --card-bg: #ffffff;
+        --border-color: #e1e8ed;
+        
+        /* UI element sizes */
+        --header-height: 60px;
+        --sidebar-width: 280px;
+        --sidebar-collapsed-width: 70px;
+        --border-radius-sm: 6px;
+        --border-radius: 10px;
+        --border-radius-lg: 16px;
+        
+        /* Spacing and effects */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2.5rem;
+        --transition-speed: 0.3s;
+        --box-shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+        --box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        --box-shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+      }
+
+      .dark-mode {
+        --primary-color: #5e72e4;
+        --primary-light: #7795f8;
+        --primary-dark: #324cdd;
+        --bg-color: #121212;
+        --bg-accent: #1e1e1e;
+        --text-color: #e6e6e6;
+        --text-muted: #a0aec0;
+        --card-bg: #1e1e1e;
+        --border-color: #2d2d2d;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding-top: var(--header-height);
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* App header with gradient */
+      .app-header {
+        background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        box-shadow: var(--box-shadow);
+        z-index: 1030;
+      }
+
+      /* Brand logo */
+      .brand-logo {
+        color: white;
+        font-weight: 600;
+        font-size: 1.3rem;
+        text-decoration: none !important;
+        display: flex;
+        align-items: center;
+        transition: transform 0.2s ease;
+      }
+
+      .brand-logo i {
+        margin-right: 0.6rem;
+        font-size: 1.5rem;
+      }
+
+      .brand-logo:hover {
+        color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      /* IMPROVED: Enhanced sidebar with proper toggle behavior */
+      .sidebar-container {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        height: calc(100vh - var(--header-height));
+        width: var(--sidebar-width);
+        background-color: var(--card-bg);
+        box-shadow: var(--box-shadow);
+        z-index: 1020;
+        overflow-y: auto;
+        transition: width var(--transition-speed) ease;
+        border-right: 1px solid var(--border-color);
+      }
+
+      .sidebar-collapsed .sidebar-container {
+        width: var(--sidebar-collapsed-width);
+        overflow-x: hidden;
+      }
+
+      /* Styled scrollbar */
+      .sidebar-container::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .sidebar-container::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .sidebar-container::-webkit-scrollbar-thumb {
+        background-color: var(--border-color);
+        border-radius: 10px;
+      }
+
+      .sidebar-header {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      /* IMPROVED: Force sidebar visibility */
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      /* IMPROVED: Better navigation links with proper collapsed behavior */
+      .sidebar-link {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.9rem 1.25rem;
+        color: var(--text-color) !important;
+        text-decoration: none !important;
+        border-left: 3px solid transparent;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin-bottom: 2px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .sidebar-link:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background-color: var(--primary-light);
+        opacity: 0.1;
+        transition: width 0.2s ease;
+        z-index: -1;
+      }
+
+      .sidebar-link:hover {
+        color: var(--primary-color) !important;
+        border-left-color: var(--primary-light);
+      }
+
+      .sidebar-link:hover:before {
+        width: 100%;
+      }
+
+      .sidebar-link.active {
+        color: var(--primary-color) !important;
+        border-left-color: var(--primary-color);
+        background-color: rgba(67, 97, 238, 0.08);
+        font-weight: 600;
+      }
+
+      /* IMPROVED: Icon styling for better collapsed state */
+      .sidebar-icon {
+        width: 24px;
+        min-width: 24px;
+        margin-right: 1rem;
+        text-align: center;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        transition: transform 0.2s ease, margin 0.3s ease;
+        color: var(--text-muted);
+      }
+
+      .sidebar-link:hover .sidebar-icon {
+        color: var(--primary-color);
+        transform: translateX(2px);
+      }
+
+      .sidebar-link.active .sidebar-icon {
+        color: var(--primary-color);
+      }
+
+      /* IMPROVED: Text handling for collapsed state */
+      .sidebar-text {
+        display: inline-block !important;
+        /* color: var(--text-color) !important; */
+        color: #748ea7;
+        transition: opacity var(--transition-speed) ease;
+      }
+
+      /* IMPROVED: Proper behavior when collapsed */
+      .sidebar-collapsed .sidebar-link {
+        padding: 0.9rem 0;
+        justify-content: center;
+        border-left: none;
+        border-left-width: 0;
+      }
+      
+      .sidebar-collapsed .sidebar-icon {
+        margin-right: 0;
+        font-size: 1.2rem;
+      }
+      
+      .sidebar-collapsed .sidebar-text {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+      }
+
+      /* IMPROVED: Show tooltips for icons in collapsed state */
+      .sidebar-collapsed .sidebar-link {
+        position: relative;
+      }
+      
+      .sidebar-collapsed .sidebar-link::after {
+        content: attr(data-title);
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background: var(--primary-color);
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.25rem;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateX(10px);
+        pointer-events: none;
+        transition: all 0.2s ease;
+        z-index: 1040;
+      }
+      
+      .sidebar-collapsed .sidebar-link:hover::after {
+        opacity: 1;
+        transform: translateX(5px);
+      }
+
+      /* Student navigation items */
+      .student-nav-item {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      /* User profile section */
+      .user-profile {
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        background: linear-gradient(to bottom, var(--bg-color), var(--card-bg));
+      }
+
+      .user-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        margin-bottom: 0.75rem;
+        box-shadow: var(--box-shadow-sm);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+
+      .user-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: var(--box-shadow);
+      }
+      
+      .user-info {
+        text-align: center;
+        transition: opacity var(--transition-speed) ease, max-height var(--transition-speed) ease;
+        max-height: 100px;
+        overflow: hidden;
+      }
+
+      .user-info h6 {
+        margin-bottom: 0.2rem;
+        font-weight: 600;
+      }
+      
+      /* IMPROVED: Better collapsed profile */
+      .sidebar-collapsed .user-profile {
+        padding: 1rem 0.75rem;
+      }
+
+      .sidebar-collapsed .user-avatar {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+      }
+
+      .sidebar-collapsed .user-info {
+        opacity: 0;
+        max-height: 0;
+      }
+
+      /* IMPROVED: Main content area with proper transition */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: var(--spacing-lg) var(--spacing-xl);
+        transition: margin-left var(--transition-speed) ease;
+        min-height: calc(100vh - var(--header-height));
+      }
+
+      .sidebar-collapsed .main-content {
+        margin-left: var(--sidebar-collapsed-width);
+      }
+
+      /* Button styles */
+      .theme-toggle, .menu-toggle, .sidebar-toggle {
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        cursor: pointer;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        color: white;
+        outline: none !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .theme-toggle:hover, .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .theme-toggle:active, .menu-toggle:active {
+        transform: translateY(0);
+      }
+
+      .theme-toggle, .menu-toggle {
+        color: white;
+      }
+
+      .sidebar-toggle {
+        color: var(--text-color);
+        background: var(--bg-accent);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      .sidebar-toggle:hover {
+        background: var(--border-color);
+        transform: scale(1.05);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* IMPROVED: Better category styling in collapsed state */
+      .nav-category {
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 0.7rem;
+        padding: 1.25rem 1.25rem 0.5rem;
+        letter-spacing: 1.5px;
+        display: block !important;
+        visibility: visible !important;
+        transition: padding var(--transition-speed) ease, opacity var(--transition-speed) ease;
+      }
+      
+      .sidebar-collapsed .nav-category {
+        text-align: center;
+        padding: 1rem 0 0.25rem;
+        font-size: 0.6rem;
+        opacity: 0.5;
+      }
+
+      /* Mobile styles */
+      @media (max-width: 992px) {
+        .sidebar-container {
+          transform: translateX(-100%);
+          box-shadow: none;
+        }
+        
+        .sidebar-open .sidebar-container {
+          transform: translateX(0) !important;
+          box-shadow: var(--box-shadow-lg);
+        }
+        
+        .menu-toggle {
+          display: flex;
+        }
+        
+        .main-content {
+          margin-left: 0 !important;
+          padding: var(--spacing-md) var(--spacing-lg);
+        }
+      }
+
+      /* Mobile overlay with blur effect */
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(3px);
+        z-index: 1015;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+      
+      @media (max-width: 992px) {
+        .sidebar-open .sidebar-overlay {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      
+      /* Auth links in header */
+      .auth-links {
+        display: flex;
+        gap: 0.75rem;
+      }
+      
+      .auth-link {
+        color: white;
+        text-decoration: none !important;
+        padding: 0.45rem 1rem;
+        border-radius: var(--border-radius-sm);
+        background-color: rgba(255, 255, 255, 0.15);
+        transition: all 0.2s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .auth-link:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      
+      .auth-link:active {
+        transform: translateY(0);
+      }
+
+      /* Card styling */
+      .card {
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: var(--card-bg);
+        overflow: hidden;
+      }
+      
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--box-shadow);
+      }
+      
+      .card-header {
+        background-color: rgba(0, 0, 0, 0.02);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 1.25rem;
+      }
+      
+      /* Badge styling */
+      .badge {
+        padding: 0.4em 0.65em;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      
+      .badge-pill {
+        border-radius: 50rem;
+      }
+      
+      /* Button enhancements */
+      .btn {
+        border-radius: var(--border-radius-sm);
+        font-weight: 500;
+        padding: 0.4rem 1rem;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+      
+      .btn-primary {
+        background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+        border: none;
+      }
+      
+      .btn-primary:hover {
+        background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+      }
+      
+      /* Notification indicator */
+      .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        font-size: 0.65rem;
+        height: 18px;
+        min-width: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(255, 59, 48, 0.3);
+      }
+    </style>
   </head>
-  <body>
-
-    <nav>
-      <div class="toggle">
-        <a href="{% url 'home' %}">Class Manager</a>
-        <i class="fa fa-bars menu"></i>
-      </div>
-    </nav>
-    <div class="sidebar">
-      <ul>
+  
+  <body class="light-mode">
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Header -->
+    <header class="app-header">
+      <!-- Mobile menu toggle -->
+      <!-- <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button> -->
+      
+      <!-- Brand logo -->
+      <a href="{% url 'home' %}" class="brand-logo">
+        <i class="fas fa-chalkboard-teacher"></i>
+        Class Manager
+      </a>
+      
+      <!-- Right-side actions -->
+      <div class="header-actions">
         {% if user.is_authenticated %}
-        {% if user.is_teacher%}
-          <li> <a href="{% url 'classroom:upload_assignment' %}">Upload Assignment</a> </li>
-          <li> <a href="{% url 'classroom:assignment_list' %}">Assignment list</a> </li>
-          <li> <a href="{% url 'classroom:submit_list' %}">View Submissions</a> </li>
-          <li> <a href="{% url 'classroom:students_list' %}">All Students List</a> </li>
-          <li> <a href="{% url 'classroom:class_student_list'%}">Class Students List</a> </li>
-          <li> <a href="{% url 'classroom:write_notice' %}">Write Notice</a> </li>
-          <li> <a href="{% url 'classroom:messages_list' pk=user.pk %}">Inbox</a> </li>
-          <li> <a href="{% url 'classroom:teacher_detail' pk=user.pk %}">Profile</a> </li>
-          {% else %}
-          <li> <a href="{% url 'classroom:all_marks_list' pk=user.pk %}">Marks</a> </li>
-          <li> <a href="{% url 'classroom:class_notice' pk=user.pk %}">Class Notice</a> </li>
-          <li> <a href="{% url 'classroom:class_assignment' %}">Class Assignment</a> </li>
-          <li> <a href="{% url 'classroom:teachers_list' %}">Teacher list</a> </li>
-          <li> <a href="{% url 'classroom:student_detail' pk=user.pk %}">Profile</a> </li>
-          {% endif %}
-          <li> <a href="{% url 'classroom:change_password' %}">Change Password</a> </li>
-          <li> <a href="{% url 'classroom:logout' %}">Logout</a> </li>
-          {% else %}
-          <li><a class="head-left" href="{% url 'classroom:login' %}">Login</a></li>
-          <li><a class="head-left" href="{% url 'classroom:signup' %}">Sign Up</a></li>
+        <!-- Authentication status -->
+        <div class="badge badge-light mr-2 d-none d-sm-block">
+          {% if user.is_teacher %}Teacher{% else %}Student{% endif %}
+        </div>
+        
+        <!-- Notifications -->
+        <div class="dropdown position-relative">
+          <button class="theme-toggle" id="notificationsDropdown" data-toggle="dropdown">
+            <i class="fas fa-bell"></i>
+            <span class="badge badge-danger badge-pill notification-badge">0</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right shadow-sm">
+            <h6 class="dropdown-header">Notifications</h6>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">No new notifications</a>
+          </div>
+        </div>
+        {% else %}
+        <!-- Login/Signup -->
+        <div class="auth-links">
+          <a href="{% url 'classroom:login' %}" class="auth-link">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
+          <a href="{% url 'classroom:signup' %}" class="auth-link">
+            <i class="fas fa-user-plus"></i> Sign Up
+          </a>
+        </div>
         {% endif %}
-      </ul>
-    </div>
+        
+        <!-- Theme toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
 
+    <!-- Enhanced sidebar with improved styling -->
+    <aside class="sidebar-container">
+      {% if user.is_authenticated %}
+      <!-- User profile -->
+      <div class="user-profile">
+        <div class="user-avatar">
+          {% if user.is_teacher %}
+          <i class="fas fa-user-tie"></i>
+          {% else %}
+          <i class="fas fa-user-graduate"></i>
+          {% endif %}
+        </div>
+        <div class="user-info">
+          <h6 class="mb-0">{{ user.username }}</h6>
+          <small class="text-muted">
+            {% if user.is_teacher %}Teacher{% else %}Student{% endif %}
+          </small>
+        </div>
+      </div>
+      {% endif %}
+      
+      <!-- Sidebar header -->
+      <div class="sidebar-header">
+        <span class="sidebar-text font-weight-bold">Navigation</span>
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+
+      <!-- Navigation menu with enhanced UI -->
+      <nav class="sidebar">
+        <ul>
+          {% if user.is_authenticated %}
+            <!-- TEACHER NAVIGATION OPTIONS -->
+            {% if user.is_teacher %}
+              <li class="nav-category">Teaching</li>
+              <li>
+                <a href="{% url 'classroom:upload_assignment' %}" class="sidebar-link" data-title="Upload Assignment">
+                  <i class="fas fa-file-upload sidebar-icon"></i>
+                  <span class="sidebar-text">Upload Assignment</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'classroom:assignment_list' %}" class="sidebar-link" data-title="Assignment List">
+                  <i class="fas fa-clipboard-list sidebar-icon"></i>
+                  <span class="sidebar-text">Assignment List</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'classroom:submit_list' %}" class="sidebar-link" data-title="View Submissions">
+                  <i class="fas fa-tasks sidebar-icon"></i>
+                  <span class="sidebar-text">View Submissions</span>
+                </a>
+              </li>
+              
+              <li class="nav-category">Students</li>
+              <li>
+                <a href="{% url 'classroom:students_list' %}" class="sidebar-link" data-title="All Students">
+                  <i class="fas fa-users sidebar-icon"></i>
+                  <span class="sidebar-text">All Students</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'classroom:class_student_list'%}" class="sidebar-link" data-title="Class Students">
+                  <i class="fas fa-user-friends sidebar-icon"></i>
+                  <span class="sidebar-text">Class Students</span>
+                </a>
+              </li>
+              
+              <li class="nav-category">Communication</li>
+              <li>
+                <a href="{% url 'classroom:write_notice' %}" class="sidebar-link" data-title="Write Notice">
+                  <i class="fas fa-bullhorn sidebar-icon"></i>
+                  <span class="sidebar-text">Write Notice</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'classroom:messages_list' pk=user.pk %}" class="sidebar-link" data-title="Inbox">
+                  <i class="fas fa-inbox sidebar-icon"></i>
+                  <span class="sidebar-text">Inbox</span>
+                </a>
+              </li>
+            {% else %}
+              <!-- STUDENT NAVIGATION OPTIONS -->
+              <li class="nav-category">Academics</li>
+              
+              <li class="student-nav-item">
+                <a href="{% url 'classroom:all_marks_list' pk=user.pk %}" class="sidebar-link" data-title="My Marks">
+                  <i class="fas fa-chart-line sidebar-icon"></i>
+                  <span class="sidebar-text">My Marks</span>
+                </a>
+              </li>
+              
+              <li class="student-nav-item">
+                <a href="{% url 'classroom:class_notice' pk=user.pk %}" class="sidebar-link" data-title="Class Notices">
+                  <i class="fas fa-bell sidebar-icon"></i>
+                  <span class="sidebar-text">Class Notices</span>
+                </a>
+              </li>
+              
+              <li class="student-nav-item">
+                <a href="{% url 'classroom:class_assignment' %}" class="sidebar-link" data-title="Assignments">
+                  <i class="fas fa-book sidebar-icon"></i>
+                  <span class="sidebar-text">Assignments</span>
+                </a>
+              </li>
+              
+              <li class="nav-category">People</li>
+              
+              <li class="student-nav-item">
+                <a href="{% url 'classroom:teachers_list' %}" class="sidebar-link" data-title="My Teachers">
+                  <i class="fas fa-chalkboard-teacher sidebar-icon"></i>
+                  <span class="sidebar-text">My Teachers</span>
+                </a>
+              </li>
+              
+              <li class="student-nav-item">
+                <a href="{% url 'classroom:student_detail' pk=user.pk %}" class="sidebar-link" data-title="My Profile">
+                  <i class="fas fa-id-card sidebar-icon"></i>
+                  <span class="sidebar-text">My Profile</span>
+                </a>
+              </li>
+            {% endif %}
+            
+            <!-- COMMON ACCOUNT OPTIONS -->
+            <li class="nav-category">Account</li>
+            {% if user.is_teacher %}
+            <li>
+              <a href="{% url 'classroom:teacher_detail' pk=user.pk %}" class="sidebar-link" data-title="Profile">
+                <i class="fas fa-id-card sidebar-icon"></i>
+                <span class="sidebar-text">Profile</span>
+              </a>
+            </li>
+            {% endif %}
+            <li>
+              <a href="{% url 'classroom:change_password' %}" class="sidebar-link" data-title="Change Password">
+                <i class="fas fa-key sidebar-icon"></i>
+                <span class="sidebar-text">Change Password</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'classroom:logout' %}" class="sidebar-link" data-title="Logout">
+                <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                <span class="sidebar-text">Logout</span>
+              </a>
+            </li>
+          {% else %}
+            <!-- NOT LOGGED IN OPTIONS -->
+            <li class="nav-category">Access</li>
+            <li>
+              <a href="{% url 'classroom:login' %}" class="sidebar-link" data-title="Login">
+                <i class="fas fa-sign-in-alt sidebar-icon"></i>
+                <span class="sidebar-text">Login</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'classroom:signup' %}" class="sidebar-link" data-title="Sign Up">
+                <i class="fas fa-user-plus sidebar-icon"></i>
+                <span class="sidebar-text">Sign Up</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="main-content">
       {% block content %}
       {% endblock %}
+    </main>
 
-
-      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-      <script type="text/javascript">
-        $(document).ready(function(){
-          $('.menu').click(function(){
-            $('ul').toggleClass('active');
-          })
-        })
-      </script>
-
+    <!-- Enhanced JavaScript -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Get necessary elements
+        const body = document.body;
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        
+        // Initialize sidebar toggle functionality
+        if (sidebarToggle) {
+          sidebarToggle.addEventListener('click', function() {
+            console.log('Sidebar toggle clicked'); // Debug line
+            body.classList.toggle('sidebar-collapsed');
+            
+            if (body.classList.contains('sidebar-collapsed')) {
+              sidebarToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+              localStorage.setItem('sidebar', 'collapsed');
+            } else {
+              sidebarToggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
+              localStorage.setItem('sidebar', 'expanded');
+            }
+          });
+        }
+        
+        // Apply saved sidebar state on page load
+        const savedSidebar = localStorage.getItem('sidebar');
+        if (savedSidebar === 'collapsed') {
+          body.classList.add('sidebar-collapsed');
+          if (sidebarToggle) {
+            sidebarToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+          }
+        }
+        
+        // Make sure all student navigation items are visible
+        document.querySelectorAll('.student-nav-item').forEach(item => {
+          item.style.display = 'block';
+          item.style.visibility = 'visible';
+          item.style.opacity = '1';
+        });
+      });
+    </script>
   </body>
 </html>

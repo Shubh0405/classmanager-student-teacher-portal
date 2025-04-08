@@ -2,17 +2,212 @@
 {% load static %}
 {% block content %}
 
-  <div class="login-page">
-  <img src="{% static 'images/login-background.PNG' %}" alt="">
-    <div class="signup">
-      <h1>Sign Up</h1>
-      <br>
-      <a href="{% url 'classroom:StudentSignUp' %}"><p>I'm a Student</p> </a>
-      <br>
-      <a href="{% url 'classroom:TeacherSignUp' %}"><p>I'm a Teacher</p> </a>
-    </div>
-    </div>
+<div class="signup-container">
+  <div class="signup-header">
+    <h1>Create an Account</h1>
+    <p>Choose how you want to use ClassManager</p>
+  </div>
+  
+  <div class="signup-options">
+    <a href="{% url 'classroom:StudentSignUp' %}" class="option-card student-card">
+      <div class="option-icon">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+      <div class="option-content">
+        <h2>I'm a Student</h2>
+        <p>Access course materials, submit assignments, and track your progress</p>
+      </div>
+      <div class="option-arrow">
+        <i class="fas fa-long-arrow-alt-right"></i>
+      </div>
+    </a>
+    
+    <a href="{% url 'classroom:TeacherSignUp' %}" class="option-card teacher-card">
+      <div class="option-icon">
+        <i class="fas fa-chalkboard-teacher"></i>
+      </div>
+      <div class="option-content">
+        <h2>I'm a Teacher</h2>
+        <p>Create classes, post assignments, and manage student performance</p>
+      </div>
+      <div class="option-arrow">
+        <i class="fas fa-long-arrow-alt-right"></i>
+      </div>
+    </a>
+  </div>
+  
+  <div class="signup-footer">
+    <p>Already have an account? <a href="{% url 'classroom:login' %}">Log In</a></p>
+  </div>
+</div>
 
-
+<style>
+  /* Sign Up Container */
+  .signup-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Header */
+  .signup-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .signup-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+  
+  .signup-header p {
+    font-size: 1.1rem;
+    color: #718096;
+  }
+  
+  /* Sign Up Options */
+  .signup-options {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Option Cards */
+  .option-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    padding: 2rem;
+  }
+  
+  .option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+  
+  .student-card {
+    border-top: 4px solid #4299e1;
+  }
+  
+  .teacher-card {
+    border-top: 4px solid #ed8936;
+  }
+  
+  /* Card Content */
+  .option-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .student-card .option-icon {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+  }
+  
+  .teacher-card .option-icon {
+    background-color: rgba(237, 137, 54, 0.1);
+    color: #ed8936;
+  }
+  
+  .option-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #2d3748;
+  }
+  
+  .student-card .option-content h2 {
+    color: #4299e1;
+  }
+  
+  .teacher-card .option-content h2 {
+    color: #ed8936;
+  }
+  
+  .option-content p {
+    color: #718096;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+  .option-arrow {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .student-card .option-arrow {
+    color: #4299e1;
+  }
+  
+  .teacher-card .option-arrow {
+    color: #ed8936;
+  }
+  
+  .option-card:hover .option-arrow {
+    transform: translateX(5px);
+  }
+  
+  /* Footer */
+  .signup-footer {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .signup-footer p {
+    color: #718096;
+  }
+  
+  .signup-footer a {
+    color: #4299e1;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .signup-footer a:hover {
+    color: #3182ce;
+    text-decoration: underline;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .signup-options {
+      flex-direction: column;
+    }
+    
+    .signup-header h1 {
+      font-size: 2rem;
+    }
+    
+    .option-card {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
 
 {% endblock %}

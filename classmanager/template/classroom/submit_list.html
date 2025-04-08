@@ -1,47 +1,344 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
-<div class="container">
-  <div class="jumbotron">
-    {% if messages %}
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-      {% for message in messages %}
-        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
-      {% endfor %}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endif %}
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-file-import page-icon"></i>
+    Student Submissions
+  </h1>
+  <p class="page-subtitle">Review and grade student assignment submissions</p>
+</div>
 
-{% if teacher.teacher_submit.count == 0 %}
-  <h2>No Submissions Yet</h2>
-{% else %}
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Submitted By</th>
-        <th scope="col">Assignment</th>
-        <th scope="col">Submitted on</th>
-        <th scope="col">Download</th>
-        <th scope="col">Enter Marks</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for submission in teacher.teacher_submit.all %}
-        <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ submission.student.name }}</td>
-          <td>{{ submission.submitted_assignment.assignment_name }}</td>
-          <td>{{ submission.created_at }}</td>
-          <td><a href="{{ submission.submit.url }}" class="btn btn-primary" target="_blank">Download</a></td>
-          <td> <a class="btn btn-danger"  href="{% url 'classroom:enter_marks' pk=submission.student.pk %}">Enter Marks</a> </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+<div class="container">
+  {% if messages %}
+  <div class="floating-alerts">
+    {% for message in messages %}
+      <div class="custom-alert {% if message.tags %} alert-{{ message.tags }}{% endif %} fade-in">
+        <div class="alert-content">{{ message|safe }}</div>
+        <button type="button" class="alert-close" data-dismiss="alert">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="card submissions-card">
+    <div class="card-body">
+      {% if teacher.teacher_submit.count == 0 %}
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-inbox"></i>
+          </div>
+          <h3>No Submissions Yet</h3>
+          <p>When students submit their assignments, they will appear here for review.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th scope="col" width="50">#</th>
+                <th scope="col">Submitted By</th>
+                <th scope="col">Assignment</th>
+                <th scope="col" width="160">Submitted on</th>
+                <th scope="col" width="110">Download</th>
+                <th scope="col" width="130">Enter Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for submission in teacher.teacher_submit.all %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td class="student-name">{{ submission.student.name }}</td>
+                  <td class="assignment-name">{{ submission.submitted_assignment.assignment_name }}</td>
+                  <td>{{ submission.created_at|date:"M d, Y" }}</td>
+                  <td>
+                    <a href="{{ submission.submit.url }}" class="btn btn-sm btn-primary action-btn" target="_blank" title="Download Submission">
+                      <i class="fas fa-download"></i> <span class="btn-text">Download</span>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="{% url 'classroom:enter_marks' pk=submission.student.pk %}" class="btn btn-sm btn-success action-btn" title="Enter Marks">
+                      <i class="fas fa-pen-alt"></i> <span class="btn-text">Enter Marks</span>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
-</div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  /* Alert styling */
+  .floating-alerts {
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  .custom-alert {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .alert-primary {
+    border-left-color: var(--primary-color);
+  }
+  
+  .alert-success {
+    border-left-color: var(--success-color);
+  }
+  
+  .alert-danger {
+    border-left-color: var(--danger-color);
+  }
+  
+  .alert-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+    margin-left: 10px;
+  }
+  
+  .alert-close:hover {
+    color: #333;
+  }
+
+  /* Card styling */
+  .submissions-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    background-color: var(--card-bg);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease;
+  }
+  
+  /* Custom table styling */
+  .custom-table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .custom-table thead th {
+    background-color: var(--bg-accent);
+    color: var(--text-color);
+    font-weight: 600;
+    border-top: none;
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 0.75rem;
+    position: relative;
+  }
+  
+  .custom-table tbody tr {
+    transition: all 0.2s;
+  }
+  
+  .custom-table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+  }
+  
+  .custom-table td, .custom-table th {
+    vertical-align: middle;
+    padding: 0.85rem 0.75rem;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .student-name {
+    font-weight: 500;
+    color: var(--text-color);
+  }
+  
+  .assignment-name {
+    color: var(--text-color);
+  }
+  
+  /* Button styling */
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    transition: all 0.3s;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    border: none;
+  }
+  
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .action-btn i {
+    margin-right: 4px;
+  }
+  
+  .btn-primary {
+    color: white;
+    background-color: var(--primary-color);
+  }
+  
+  .btn-success {
+    color: white;
+    background-color: var(--success-color);
+  }
+  
+  .btn-sm {
+    font-size: 0.85rem;
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .table-responsive {
+      border: none;
+    }
+    
+    .btn-text {
+      display: none;
+    }
+    
+    .action-btn {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    
+    .action-btn i {
+      margin-right: 0;
+    }
+    
+    .custom-table th, 
+    .custom-table td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Animation and interactive elements
+  document.addEventListener('DOMContentLoaded', function() {
+    // Auto close alerts after 5 seconds
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.custom-alert');
+      alerts.forEach(alert => {
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 500);
+      });
+    }, 5000);
+    
+    // Make alert dismissible
+    document.querySelectorAll('.alert-close').forEach(button => {
+      button.addEventListener('click', function() {
+        const alert = this.parentElement;
+        alert.style.opacity = '0';
+        setTimeout(() => {
+          alert.style.display = 'none';
+        }, 300);
+      });
+    });
+  });
+</script>
+
 {% endblock %}

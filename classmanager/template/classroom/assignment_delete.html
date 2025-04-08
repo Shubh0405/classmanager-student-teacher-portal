@@ -1,17 +1,235 @@
 {% extends 'classroom/base.html' %}
 {% block content %}
 
+<div class="page-header">
+  <h1 class="page-title">
+    <i class="fas fa-trash-alt page-icon"></i>
+    Delete Assignment
+  </h1>
+  <p class="page-subtitle">Please confirm you want to delete this assignment</p>
+</div>
+
 <div class="container">
-  <div class="jumbotron">
-    <h1>Delete {{ object.assignment_name }}?</h1>
-
-    <form method='POST'>
+  <div class="delete-confirmation-card">
+    <div class="warning-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    
+    <h2 class="confirmation-title">Delete "{{ object.assignment_name }}"?</h2>
+    
+    <p class="confirmation-message">
+      This action cannot be undone. All student submissions related to this assignment will also be deleted.
+    </p>
+    
+    <form method="POST" class="confirmation-form">
       {% csrf_token %}
-      <p>Are you sure you want to remove this Assignment?</p>
-      <input class="btn btn-primary" type='submit' value='Yes'>
-      <a class="btn btn-danger" href="{% url 'classroom:assignment_list' %}">Cancel</a>
-
+      <div class="action-buttons">
+        <button type="submit" class="btn btn-danger btn-delete">
+          <i class="fas fa-trash-alt"></i> Delete Assignment
+        </button>
+        <a href="{% url 'classroom:assignment_list' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </div>
     </form>
   </div>
 </div>
+
+<style>
+  /* Page header styling */
+  .page-header {
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.6s ease;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-icon {
+    color: #dc3545;
+    font-size: 1.8rem;
+    margin-right: 0.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  /* Delete confirmation card styling */
+  .delete-confirmation-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-top: 4px solid #dc3545;
+    animation: fadeIn 0.8s ease, slideIn 0.8s ease;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Warning icon styling */
+  .warning-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+    animation: warningPulse 2s infinite;
+  }
+  
+  @keyframes warningPulse {
+    0% { transform: scale(1); }
+    10% { transform: scale(1.1); }
+    20% { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+  
+  /* Text styling */
+  .confirmation-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 1.25rem;
+  }
+  
+  .confirmation-message {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  
+  /* Form styling */
+  .confirmation-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Button container */
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  /* Button styling */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    transition: all 0.3s;
+    border: none;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Delete button styling */
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .btn-delete {
+    animation: attention 3s infinite;
+  }
+  
+  @keyframes attention {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+  }
+  
+  /* Cancel button styling */
+  .btn-outline-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: var(--bg-accent);
+    color: var(--text-color);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(30px); }
+    to { transform: translateY(0); }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 576px) {
+    .delete-confirmation-card {
+      padding: 2rem 1rem;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .action-buttons .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .confirmation-title {
+      font-size: 1.5rem;
+    }
+    
+    .confirmation-message {
+      font-size: 1rem;
+    }
+  }
+</style>
+
 {% endblock %}
